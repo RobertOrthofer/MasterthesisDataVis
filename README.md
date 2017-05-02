@@ -9,26 +9,26 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-* [Node](https://nodejs.org/en/)
+* [git](https://git-scm.com/downloads)
+* [Node.js](https://nodejs.org/en/)
+* Local Webserver, for instance npm [http-server](https://www.npmjs.com/package/http-server)
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
+Clone a copy of this project by running:
 ```
-Give the example
+git clone https://github.com/RobertOrthofer/MasterthesisDataVis.git
 ```
 
-And repeat
+start the local Webserver at the root directory by running
 
 ```
-until finished
+http-server
 ```
+open index.htm in a browser
+Data for testing is available at /sample_data
 
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Authors
 
-* **Robert Orthofer** - *Initial work* - [GitHub](https://github.com/RobertOrthofer)
+* **Robert Orthofer**  [GitHub](https://github.com/RobertOrthofer)
