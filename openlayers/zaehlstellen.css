@@ -1,0 +1,625 @@
+
+	html, body {
+		height: 100%;
+		width: 100%;
+		margin: 0;
+		background-color: #ffffff;
+		font-family: Verdana, Geneva, sans-serif;
+
+		/* trying to remove font-flickering after translation of menu */
+		-webkit-backface-visibility: hidden;
+		-webkit-font-smoothing: antialiased;
+		-webkit-transform: translateZ(0px);
+	}
+
+	.map {
+		left: 0;
+		top: 0;
+		margin: 0;
+		padding: 0;
+		width: 75%;
+		height: 100%;
+		z-index: -1;
+	}
+
+	#map{
+		position: fixed;
+		z-index: 0;
+	}
+
+	#menu {
+		float: right;
+		width: 23%;
+		margin-right: 1%;
+		margin-left: 1%;
+		text-align: center;
+	}
+
+	#json_info_div{
+		width: 90%;
+		margin-right: 5%;
+		margin-left: 5%
+		border: 0px;
+		padding: 0px;
+	}
+
+	.list{
+		margin: 0px;
+		font-size: 12px;
+		text-align: left;
+	}
+
+
+	#sliderDiv{
+		position: relative;
+		width: 100%;
+		text-align: center;
+		padding-right: 0px;
+		padding-left: 0px;
+	}
+	/*
+	#time_slider{
+		width: 60%;
+	}
+	*/
+	#sliderAndButtons{
+		width: 100%;
+		display: inline-block;
+		overflow: hidden;
+		white-space: nowrap;
+		text-align: center;
+		float:left;
+	}
+
+	#sliderOnly{
+		width: calc(100% - 58px);
+		display: inline-block;
+		padding-top: 5px;
+	}
+
+	#drop_zone_holder{
+		position: relative;
+		top: 0px;
+		z-index: 10;
+		background-color: white;
+		width: 100%;
+		display: table;
+		border-collapse: separate;
+		border-spacing: 10px;
+	}
+
+	.drop_zone{
+		width: 50%;
+		display: table-cell;
+		vertical-align: middle;
+		margin: 2%;
+		border: 1px;
+		border-style: dashed;
+		border-color: #222222;
+		background-color: #f0f6fb;
+	}
+
+	#hideSelectionHolder{
+		height: 20px;
+		margin-bottom: 5px;
+		position: relative;
+		z-index: 120;
+		background-color: #4A74AA;
+		width: 100%;
+		visibility: hidden;
+	}
+
+	.hideSelectionButton{
+		position: relative;
+		display: inline;
+		width: 50%;
+		height: 20px;
+		line-height: 12px;
+		border: none;
+		z-index: 11;
+		cursor: pointer;
+		color: white;
+	}
+
+/* remove dotted border from Firefox */
+button::-moz-focus-inner {
+  border: 0;
+}
+
+
+
+	#hideCoordSelection{
+		float: left;
+		background-color: #4A74AA;
+		display: inline-block;
+		visibility: hidden;
+	}
+
+	#hideDataSelection{
+		float: right;
+		background-color: #4A74AA;
+		display: inline-block;
+		visibility: hidden;
+	}
+
+	.choseFieldDiv{
+		display: inline-block;
+		visibility: hidden;
+		position: relative;;
+		padding: 0%;
+		border-color: #4A74AA;
+		z-index: 0;
+		text-align: left;
+		background-color: #4A74AA;
+		color: white;
+		width: 100%;
+		transition: transform 0.3s;
+	}
+
+	.choseFieldDiv.no-flickr {  /* y u no work <.< */
+		-webkit-backface-visibility: hidden;
+		-moz-backface-visibility:    hidden;
+		-ms-backface-visibility:     hidden;
+		-webkit-transform-style: preserve-3d;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+	#choseFieldDiv1{
+		height: 105px;
+		top: -107px;
+		z-index: 1;
+	}
+
+	#choseFieldDiv2{
+		z-index: 2;
+		height: 67px;
+		top: -170px;
+	}
+
+.single_selection{
+	background-color: #4A74AA;
+	position: relative;
+	z-index: 1;
+	margin: 0;
+	width: 100%;
+	padding: 0;
+	vertical-align: middle;
+	line-height: 40px;
+	height: 40px;
+}
+
+	.fieldText{
+		position: relative;
+		z-index: 1;
+		float: left;
+		width: 27%;
+		text-align: right;
+		padding-right: 3%;
+		padding-left: 7%;
+		font-size: 12px;
+	}
+
+	.styled-select {
+		float: right;
+		margin: 0px;
+		margin-top: 5px;
+		border: 0px;
+		padding: 0px;
+	  	width: 55%;
+		height: 30px;
+	  	overflow: hidden;
+		margin-right: 5%;
+	  	background: #f0f6fb;
+	}
+
+	.styled-select select {
+	   background: transparent;
+	margin-right: 50px;
+	   width: 100%;
+	   padding: 0px;
+	   font-size: 12px;
+	   line-height: 1;
+	   border: 0;
+	   border-radius: 0;
+	   -webkit-appearance: none;
+	}
+
+	#epsgInput{
+		float: right;
+		margin: 0px;
+		margin-top: 5px;
+		border: 0px;
+		padding: 0px;
+		padding-left: 5px;
+		width: 25%;
+		height: 30px;
+		overflow: hidden;
+		margin-right: calc(35% - 5px);
+		background: #f0f6fb;
+	}
+
+
+	.renderButton{
+		background-color: #4A74AA;
+		position: relative;
+		z-index: 1;
+		margin-top: 0px;
+		border: none;
+		border-top: 1px dashed;
+		border-color: white;
+		width: 100%;
+		height: 25px;
+		top: 0px;
+		text-align: center;
+		line-height: 12px;
+		font-size: 12px;
+		cursor: pointer;
+		color: white;
+		visibility: hidden;
+	}
+
+	#menuBelowSelection{
+		top: -80px;
+		transition: transform 0.3s;
+	}
+
+	#canvas_div{
+		position: relative;
+		margin-top: 10px;
+		/*visibility: hidden;*/
+		display: none;
+	}
+
+	#myChart{
+		height: 100%;
+	}
+
+	#snapshot_div{
+		width: calc(100% - 20px);
+		margin-left: 45px;
+		margin-bottom: 15px;
+		overflow: auto;
+	}
+	#playbutton_div{
+		height: 30px;
+	}
+
+	#weekday_div {
+		white-space: nowrap;
+		margin-top: 20px;
+		margin-bottom: 15px;
+	}
+	/* Checkoboxes for selecting Weekday */
+	#weekday_div input {
+		display: none;
+	}
+	.input-check{
+		display:inline-block;
+		height:20px;
+		padding-top: 3px;
+		padding-bottom: 3px;
+		line-height: 20px;
+		background:#A4C4E8;
+		width:12%;
+		color:white;
+		font-weight:bold;
+		font-size: 12px;
+		/* Make Text Unselectable */
+		-webkit-user-select: none; /* Chrome/Safari */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* IE10+ */
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		cursor: pointer;
+		border: 0.2px solid #ffffff;
+	}
+	.input-check:hover {
+		border-color: #A4C4E8;
+	}
+
+
+	/* This is the style for a checked "button" */
+	input:checked + .input-check {
+		display:inline-block;
+		background:#4A74AA;
+		color:white;
+		font-weight:bold;
+		padding-top: 3px;
+		padding-bottom: 3px;
+		/* Make Text Unselectable */
+		-webkit-user-select: none; /* Chrome/Safari */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* IE10+ */
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		border: 0.2px solid #010101;
+	}
+
+	/* Hide the checkbox */
+	.input-check input{
+		display:none
+	}
+
+
+
+	/*-------------- Styling the slider --------------------------*/
+	input[type=range] {
+	  -webkit-appearance: none;
+	  width: 100%;
+	  margin: 0px 0;
+	}
+	input[type=range]:focus {
+	  outline: none;
+	}
+	input[type=range]::-webkit-slider-runnable-track {
+	  width: 100%;
+	  height: 9px;
+	  cursor: pointer;
+	  /*box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;*/
+	  background: #4A74AA;
+	  border-radius: 0px;
+	  border: 0.2px solid #010101;
+	}
+	input[type=range]::-webkit-slider-thumb {
+	  /*box-shadow: 0.9px 0.9px 1px #000031, 0px 0px 0.9px #00004b;*/
+	  border: 1.8px solid #00001e;
+	  height: 20px;
+	  width: 20px;
+	  border-radius: 15px;
+	  background: #ffffff;
+	  cursor: pointer;
+	  -webkit-appearance: none;
+	  margin-top: -7.5px;
+	}
+	input[type=range]:focus::-webkit-slider-runnable-track {
+	  background: #4A74AA;
+	}
+	input[type=range]::-moz-range-track {
+	  margin-top: 5px;
+	  width: 100%;
+	  height: 5px;
+	  cursor: pointer;
+	  /*box-shadow: 1px 1px 1px #ffffff, 0px 0px 1px #0d0d0d;*/
+	  background: #4A74AA;
+	  border-radius: 1.3px;
+	  border: 0.2px solid #010101;
+	}
+	input[type=range]::-moz-range-thumb {
+	  /*box-shadow: 0.9px 0.9px 1px #ffffff, 0px 0px 0.9px #ffffff;*/
+	  border: 1.8px solid #00001e;
+	  height: 20px;
+	  width: 20px;
+	  border-radius: 15px;
+	  background: #ffffff;
+	  cursor: pointer;
+	}
+	input[type=range]::-ms-track {
+	  width: 100%;
+	  height: 9px;
+	  cursor: pointer;
+	  background: transparent;
+	  border-color: transparent;
+	  color: transparent;
+	}
+	input[type=range]::-ms-fill-lower {
+	  background: #4A74AA;
+	  border: 0.2px solid #010101;
+	  border-radius: 2.6px;
+	   /*box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;*/
+	}
+	input[type=range]::-ms-fill-upper {
+	  background: #4A74AA;
+	  border: 0.2px solid #010101;
+	  border-radius: 2.6px;
+	  /*box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;*/
+	}
+	input[type=range]::-ms-thumb {
+	  /*box-shadow: 0.9px 0.9px 1px #000031, 0px 0px 0.9px #00004b;*/
+	  border: 1.8px solid #00001e;
+	  height: 20px;
+	  width: 20px;
+	  border-radius: 15px;
+	  background: #ffffff;
+	  cursor: pointer;
+	  height: 9px;
+	}
+	input[type=range]:focus::-ms-fill-lower {
+	  background: #4A74AA;
+	}
+	input[type=range]:focus::-ms-fill-upper {
+	  background: #4A74AA;
+	}
+
+	#currentDate {
+		font-size: 11pt;
+	}
+
+	/* ------------------------ Buttons for timeslider ---------------- */
+	.timesliderButton {
+		background-color: #4A74AA;
+		display: inline-block;
+		height:20px;
+		width:20px;
+		border: none;
+		padding: 0px 0px;
+		text-align: center;
+		font-weight: bold;
+		display: inline-block;
+		font-size: 12px;
+		margin: 2px 2px;
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		cursor: pointer;
+	}
+
+	.timesliderButton {
+		background-color: #4A74AA;
+		color: white;
+		border: 1px solid #000000;
+	}
+
+	.timesliderButton:hover {
+		background-color: #A4C4E8;
+		color: white;
+		border: 1px solid #000000;
+	}
+
+	/* ------------------------ Other Buttons ---------------- */
+	.other_button {
+		background-color: #4A74AA;
+		display: inline-block;
+		border: none;
+		padding: 2px 2px;
+		text-align: center;
+		font-weight: bold;
+		display: inline-block;
+		font-size: 12px;
+		margin: 2px 2px;
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		cursor: pointer;
+	}
+
+	.other_button {
+		background-color: #4A74AA;
+		color: white;
+		border: 1px solid #000000;
+	}
+
+	.other_button:hover {
+		background-color: #A4C4E8;
+		color: white;
+		border: 1px solid #000000;
+	}
+
+	#snapshot_button{
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 25px;
+		width:25px;
+		background-color: #A4C4E8;
+	}
+	#snapshot_button:hover {
+		background-color: #4A74AA;
+		border: 1px solid #000000;
+	}
+
+	#snapshot_table{
+		width: 100%;
+		border: none;
+	}
+
+	#showSnapshot{
+		width: 90%;
+		float: left;
+	}
+
+	#delete_snapshots{
+		float: right;
+		margin-right: 10%;
+		-webkit-transition-duration: 0s; /* Safari */
+		transition-duration: 0s;
+	}
+
+	#legend{
+		margin-top: 20px;
+		text-align: left;
+		position: relative;
+		overflow: hidden;
+		white-space: nowrap;
+		font-size: 12px;
+		display: table;
+	}
+
+	#size_legend{
+		display: table-cell;
+		width: 50%;
+	}
+
+	#size_image_div {
+		top: 55px;
+		left: 0px;
+		height: 130px;
+	}
+
+	#size_legend_text{
+		margin-bottom: 5px;
+		white-space: normal;
+		font-weight: bold;
+	}
+
+	#size_legend_content,
+	#color_legend_content{
+		position: relative;
+	}
+
+	#size_image_max{
+		position: absolute;
+		top: 0px;
+		left: 42px;
+	}
+
+	#size_image_mid{
+		position: absolute;
+		top: 35px;
+		left: 42px;
+	}
+
+	#size_image_min{
+		position: absolute;
+		top: 60px;
+		left: 42px;
+	}
+
+	#color_legend{
+		display: table-cell;
+		width: 50%;
+	}
+
+	#color_legend_text{
+		margin-bottom: 5px;
+		white-space: normal;
+		font-weight: bold;
+	}
+
+	#color_maximum{
+		position: absolute;
+		top: 0px;
+		left: 24px;
+	}
+
+	#color_image_div{
+		margin: 0 auto;
+	}
+
+	#color_minimum{
+		position: absolute;
+		top: 95px;
+		left: 24px;
+	}
+
+
+	#layer_panel{
+		position: absolute;
+		top: 7px;
+		right: 10px;
+		overflow: visible;
+		z-index:9999;
+
+	}
+	#basemap{
+		float: left;
+	}
+
+	#topographic{
+		float: left;
+	}
+
+	#no_background{
+		float: left;
+	}
