@@ -23,6 +23,7 @@ start the local webserver at the root directory by running
 http-server
 ```
 open index.htm in a browser
+
 Data for testing is available at /sample_data
 
 
