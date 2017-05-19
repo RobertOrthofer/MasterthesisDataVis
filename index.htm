@@ -29,33 +29,30 @@
             opacity: 0.7;
             -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
             transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .linkButton:hover{
+            transform: scale(1.05, 1.05);
+            -webkit-transform: scale(1.05, 1.05);
+            opacity: 1;
         }
 
         #openlayers{
             background-color: #4fadc2;
         }
-        #openlayers:hover{
-            transform: scale(1.05, 1.05);
-            -webkit-transform: scale(1.05, 1.05);
-            opacity: 1;
-        }
 
         #leaflet{
             background-color: #ce4827;
         }
-        #leaflet:hover{
-            transform: scale(1.05, 1.05);
-            -webkit-transform: scale(1.05, 1.05);
-            opacity: 1;
-        }
 
         #d3{
             background-color: #4b8e4c;
-        }
-        #d3:hover{
-            transform: scale(1.05, 1.05);
-            -webkit-transform: scale(1.05, 1.05);
-            opacity: 1;
         }
     </style>
 
@@ -63,9 +60,9 @@
 
 
 <body>
-    <div id="openlayers" class="linkButton">openlayers</div>
-    <div id="leaflet" class="linkButton">leaflet</div>
-    <div id="d3" class="linkButton">d3</div>
+    <div id="openlayers" class="linkButton" onclick="location.href='https://robertorthofer.github.io/MasterthesisDataVis/openlayers/';">metrische/kardinale Daten</div>
+    <div id="leaflet" class="linkButton">ordinale Daten</div>
+    <div id="d3" class="linkButton">nominale Daten</div>
 </body>
 
 </html>
