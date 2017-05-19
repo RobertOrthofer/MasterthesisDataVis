@@ -77,7 +77,6 @@ function add_zaehlstellen(coords_json)
 
 	// save the current Selection to global variable selectedOptions, so they can only be changed with the apply button
 	var idField = document.getElementById("coordIDSelect").value; // array, because it might be nested
-	//var coordsField = document.getElementById("xSelect").value.split(","); // array, because it might be nested
 	var epsgField = document.getElementById("epsgInput").value;
 	selectedOptions.coordID = idField;
 	//selectedOptions.coordField = coordsField;
@@ -110,21 +109,18 @@ function add_zaehlstellen(coords_json)
 		xhttp.open("GET", xhrString, false); // not asynch, need coordinates before points are displayed on map
 		xhttp.send();
 	}
-	//eval(responseString);
 	console.log(ol.proj.get('EPSG:' + epsgField));
+	var geometryType = coords_json.features[0].geometry.type;
 	ZaehlstellenPoints = new ol.layer.Vector({
 		source: new ol.source.Vector({
 			features: (new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:4326'})).readFeatures(coords_json, {
-				//dataProjection: proj4('EPSG:' + epsgField),  //e.g.: proj4('EPSG:32633');
-				 dataProjection: ol.proj.get('EPSG:' + epsgField),  //e.g.: proj4('EPSG:32633');
-				//dataProjection: ol.proj.ProjectionLike('EPSG:' + epsgField),  //e.g.: proj4('EPSG:32633');
-				//dataProjection: 'EPSG:32633',
-				//dataProjection: 'EPSG:' + epsgField,
+				dataProjection: ol.proj.get('EPSG:' + epsgField),  //e.g.: proj4('EPSG:32633');
 				featureProjection: 'EPSG:3857'
 			})
 		}),
 		style: function(feature, resolution){
 			var geom = feature.getGeometry().getType();
+			if(geom === 'Polygon'){geom = 'MultiPolygon'} //for easier styling, make polygons to multipolygons
 			var id = feature.get(idField[1]);
 			return styles[geom];
 		}
@@ -135,8 +131,16 @@ function add_zaehlstellen(coords_json)
 				radius: 15,
 				fill: new ol.style.Fill({color: 'black'})
 			})
-		})]
-		,
+		})],
+		'MultiPolygon': [new ol.style.Style({
+        	stroke: new ol.style.Stroke({
+            	color: 'white',
+            	width: 3
+          	}),
+          	fill: new ol.style.Fill({
+            	color: 'rgba(0, 0, 0, 0.8)'
+          	})
+        })]
 	};
 	map.addLayer(ZaehlstellenPoints);
 
@@ -170,7 +174,7 @@ function add_zaehlstellen(coords_json)
 
 
 	//------- Change Style of Points according to Value of Zählstelle --------->
-	function updateStyle(y){  // y = integer of current day
+	function updateStyle(y){  // y = integer of current day (according to timeslider)
 		//console.log(window.radiustest);
 		//window.radiustest = 0;
 		// calculate min and max values for current day (for radius)
@@ -190,9 +194,13 @@ function add_zaehlstellen(coords_json)
 
 		ZaehlstellenPoints.setStyle(function(feature, resolution){
 			var geom = feature.getGeometry().getType();  // geom = point
+			if(geom === 'Polygon'){geom = 'MultiPolygon'} //for easier styling, make polygons to multipolygons
+			console.log("GEOMETRY: " + geom);
 			var zaehlstelle = feature.get(selectedOptions.coordID);  // selectedOptions.coordID = e.g. "zaehlstelle", zaehlstelle = e.g.:"b30657"
-			console.log(zaehlstelle);
+			console.log("zaehlstelle: " + zaehlstelle);
 			var amount = zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
+			console.log("amount: " + amount);
+			console.log("min_max_zaehlstelle: " + [zaehlstelle]);
 			//example: min_max_zaehlstelle["b02501"][1] = maximum of b02501 of all days
 
 			var color_hue = 110 - Math.round((amount/min_max_zaehlstelle[zaehlstelle][1])*110) // 110 = green, 0 = red, between = yellow
@@ -205,13 +213,21 @@ function add_zaehlstellen(coords_json)
 
 			var styles = {
 				'Point': [new ol.style.Style({
-				image: new ol.style.Circle({
-				radius: radius_size,
-				fill: new ol.style.Fill({color: 'hsl('+color_hue+', 100%, 50%)'}),
-				stroke: new ol.style.Stroke({color: 'hsl('+color_hue+', 100%, 20%)', width: 3})
-				})
-				})]
-				,
+					image: new ol.style.Circle({
+						radius: radius_size,
+						fill: new ol.style.Fill({color: 'hsl('+color_hue+', 100%, 50%)'}),
+						stroke: new ol.style.Stroke({color: 'hsl('+color_hue+', 100%, 20%)', width: 3})
+					})
+				})],
+			'MultiPolygon': [new ol.style.Style({
+	        	stroke: new ol.style.Stroke({
+	            	color: 'white',
+	            	width: 3
+	          	}),
+	          	fill: new ol.style.Fill({
+	            	color: 'hsl('+color_hue+', 100%, 50%)'
+	          	})
+	        })]
 			};
 			return styles[geom];
 		});
@@ -442,10 +458,11 @@ function add_zaehlstellen(coords_json)
 		console.log("Apply-Date Button pressed");
 		var dateField = document.getElementById("dateSelect").value.split(",");
 		selectedOptions.dateField = dateField;
+		console.log("datefield: " + dateField);
 
 		makeDateObjects(zaehlstellen_data);
 		init_timeslider(zaehlstellen_data);
-		find_dataRange(zaehlstellen_data);
+		find_dataRange(zaehlstellen_data, dateField);
 
 		if(typeof(selectedOptions.coordID) !== "undefined"){  // if coordID was selected and applied...
 			map.getLayers().forEach(function(layer) {
@@ -482,11 +499,14 @@ function add_zaehlstellen(coords_json)
 		updateInput(thisDate, goLeft, loop);
 	}
 	//---------- Find min and max Data Values for Visualization ---------->
-	function find_dataRange(data){
+	function find_dataRange(data, dateField){
 		console.log("find_dataRange");
 		min_max_zaehlstelle ={};
-		for (k = 1; k < Object.keys(data[0]).length; k++){  // name of zaehlstelle
+		for (k = 0; k < Object.keys(data[0]).length; k++){  // name of zaehlstelle
 			var name_zaehlstelle = Object.keys(zaehlstellen_data[0])[k];
+			if(name_zaehlstelle === dateField){ continue; }; //skip this if field is date field
+			console.log("k: " + k);
+			console.log("name der zaehlstelle: " + name_zaehlstelle);
 			var min_max = [Infinity, -Infinity];
 
 			for (i = 1; i < data.length; i++){  // also via keys? // value of zaehlstelle at certain date
