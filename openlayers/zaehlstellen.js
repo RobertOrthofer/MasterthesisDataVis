@@ -173,11 +173,8 @@ function add_zaehlstellen(coords_json)
 }
 
 
-	//------- Change Style of Points according to Value of Zählstelle --------->
-	function updateStyle(y){  // y = integer of current day (according to timeslider)
-		//console.log(window.radiustest);
-		//window.radiustest = 0;
-		// calculate min and max values for current day (for radius)
+	// calculate min and max values for current day (for radius)
+	function getMaxThisDay(y){  // y = integer of current day (according to timeslider)
 		var max_thisDay = -Infinity;
 		for (var k in zaehlstellen_data[y]) { // of for every zaehlstelle
 			if (typeof zaehlstellen_data[y][k] == 'number') { // only numbers, one item is the date
@@ -185,6 +182,15 @@ function add_zaehlstellen(coords_json)
 				if (amount > max_thisDay) {max_thisDay = amount}; // maximum
 			}
 		}
+		return(max_thisDay);
+	}
+
+	//------- Change Style of Points according to Value of Zählstelle --------->
+	function updateStyle(y){  // y = integer of current day (according to timeslider)
+		//console.log(window.radiustest);
+		//window.radiustest = 0;
+
+		var max_thisDay = getMaxThisDay(y);
 		// write values into size-legend
 		document.getElementById("size_image_max").innerHTML = max_thisDay; // biggest circle (d=70px) = maximum value
 		var middle_value = Math.round(max_thisDay/4); // Circle with half diameter (35px) = 1/4 Area
@@ -640,12 +646,6 @@ function change_state(obj){
 					stroke: new ol.style.Stroke({
 					  color: '#4A74AA',
 					  width: 2
-					}),
-					image: new ol.style.Circle({
-					  radius: 70,
-					  fill: new ol.style.Fill({
-						color: '#000000'
-					  })
 					})
 				})
 			});
@@ -895,7 +895,6 @@ function SelectSinglePoint(){
 	map.addInteraction(select); // Interaktion der Karte hinzufügen
 
 	// single point selection
-	var oldStyle;
 	select.on('select', function(e) {
 		if(typeof(zaehlstellen_data) !== "undefined"){
 			var features = select.getFeatures(); // Feature Array
@@ -912,16 +911,18 @@ function SelectSinglePoint(){
 					//example: min_max_zaehlstelle["b02501"][1] = maximum of b02501
 
 					//style when selected
+
 					var color_hue = 110 - Math.round((amount/min_max_zaehlstelle[zaehlstelle][1])*110) // 110 = green, 0 = red, between = yellow
 					var feature_color = 'hsl('+ color_hue +', 99%, 99%)';
 
-					var radius_size = (Math.round((amount/min_max_zaehlstelle[zaehlstelle][1]))+1)*10;
-					oldStyle = feature.getStyle();
+					//var radius_size = (Math.round((amount/min_max_zaehlstelle[zaehlstelle][1]))+1)*10;
+					var max_thisDay = getMaxThisDay(y);
+					var radius_size = Math.sqrt((amount/(2*Math.PI)))/Math.sqrt((max_thisDay/(2*Math.PI)))*35;
 					var style_modify = new ol.style.Style({
 							image: new ol.style.Circle({
 								radius: radius_size,
 								fill: new ol.style.Fill({color: 'hsl('+color_hue+', 100%, 80%)'}),
-								stroke: new ol.style.Stroke({color: 'hsl('+color_hue+', 100%, 50%)', width: 7})
+								stroke: new ol.style.Stroke({color: 'hsl('+color_hue+', 100%, 50%)', width: 2})
 						})
 					});
 					feature.setStyle(style_modify);
