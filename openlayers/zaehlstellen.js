@@ -921,8 +921,8 @@ function SelectSinglePoint(){
 					var style_modify = new ol.style.Style({
 							image: new ol.style.Circle({
 								radius: radius_size,
-								fill: new ol.style.Fill({color: 'hsl('+color_hue+', 100%, 80%)'}),
-								stroke: new ol.style.Stroke({color: 'hsl('+color_hue+', 100%, 50%)', width: 2})
+								fill: new ol.style.Fill({color: 'hsl('+color_hue+', 100%, 50%)'}),
+								stroke: new ol.style.Stroke({color: 'black', width: 3})
 						})
 					});
 					feature.setStyle(style_modify);

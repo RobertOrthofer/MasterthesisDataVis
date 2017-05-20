@@ -9,30 +9,27 @@
 		/* trying to remove font-flickering after translation of menu */
 		-webkit-backface-visibility: hidden;
 		-webkit-font-smoothing: antialiased;
-		-webkit-transform: translateZ(0px);
 	}
 
-	.map {
+	#map{
+		position: fixed;
 		left: 0;
 		top: 0;
 		margin: 0;
 		padding: 0;
 		width: 75%;
+		max-width: calc(100% - 280px);
 		height: 100%;
-		z-index: -1;
-	}
-
-	#map{
-		position: fixed;
 		z-index: 0;
 	}
 
 	#menu {
-		float: right;
-		width: 23%;
-		margin-right: 1%;
-		margin-left: 1%;
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		width: 25%;
 		text-align: center;
+		min-width: 280px;
 	}
 
 	#json_info_div{
@@ -161,11 +158,11 @@ button::-moz-focus-inner {
 		-moz-backface-visibility:    hidden;
 		-ms-backface-visibility:     hidden;
 		-webkit-transform-style: preserve-3d;
-    -webkit-transform: translateZ(0);
-    -moz-transform: translateZ(0);
-    -ms-transform: translateZ(0);
-    -o-transform: translateZ(0);
-    transform: translateZ(0);
+	    -webkit-transform: translateZ(0);
+	    -moz-transform: translateZ(0);
+	    -ms-transform: translateZ(0);
+	    -o-transform: translateZ(0);
+	    transform: translateZ(0);
 }
 
 	#choseFieldDiv1{
@@ -265,6 +262,8 @@ button::-moz-focus-inner {
 	#menuBelowSelection{
 		top: -80px;
 		transition: transform 0.3s;
+		padding-left: 8px;
+		padding-right: 8px;
 	}
 
 	#canvas_div{
