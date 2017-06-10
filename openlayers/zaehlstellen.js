@@ -393,6 +393,8 @@ function handleFileSelect2(evt) {
         if (r == true) {
             console.log("Override File");
             // now clear all old options from Data-Selection
+            debugger
+            zaehlstellen_data = [];
             var select = document.getElementById("dateSelect");
             var length = select.options.length;
             for (i = 0; i < length; i++) {
@@ -419,6 +421,8 @@ function handleFileSelect2(evt) {
             zaehlstellen_data = csvToJSON(reader.result);
         } else {
             zaehlstellen_data = JSON.parse(reader.result); // global, better method?
+            console.log(zaehlstellen_data);
+            debugger
         }
 
         document.getElementById("renderDataButton").style.visibility = "visible";
@@ -427,6 +431,7 @@ function handleFileSelect2(evt) {
         document.getElementById("hideSelectionHolder").style.visibility = "visible";
 
         askFields2(zaehlstellen_data[0], 2); // only first feature is needed for property names
+
         document.getElementById("renderDataButton").addEventListener('click', function() {
             applyDate();
         }, false);
@@ -557,6 +562,8 @@ function makeDateObjects(data) {
     console.log("makeDateObjects");
     for (i = 0; i < data.length; i++) {
         var datestring = data[i][selectedOptions.dateField];
+        console.log(datestring);
+        debugger
         var thisYear = parseInt(datestring.substring(0, 4));
         var thisMonth = parseInt(datestring.substring(5, 7));
         var thisDay = parseInt(datestring.substring(8, 10));
@@ -1212,6 +1219,23 @@ function showCoordsSelection() {
         document.getElementById('choseFieldDiv1').style.transform = "translateY(-83px)";
         document.getElementById("menuBelowSelection").style.transform = "translateY(-248px)";
         selectionStatus.coords = false;
+    }
+}
+
+function hideDropZone(){
+    console.log("hide/show Drop Zones ");
+
+    // calculating direction of div (up or down)
+    if (document.getElementById("hideDropZone").innerHTML == "▲") {
+        console.log("hide Drop Zones");
+        document.getElementById("hideDropZone").innerHTML = "▼";
+        //document.getElementById('choseFieldDiv1').style.transform = "translateY(102px)";
+        //document.getElementById("menuBelowSelection").style.transform = "translateY(-60px)";
+    } else {
+        console.log("show Drop Zones");
+        document.getElementById("hideDropZone").innerHTML = "▲";
+        //document.getElementById('choseFieldDiv1').style.transform = "translateY(-83px)";
+        //document.getElementById("menuBelowSelection").style.transform = "translateY(-248px)";
     }
 }
 
