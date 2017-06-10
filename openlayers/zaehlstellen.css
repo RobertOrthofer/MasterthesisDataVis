@@ -99,20 +99,41 @@
 		z-index: 10;
 		background-color: #f0f6fb;
 		width: 100%;
-		display: table;
 		border-collapse: separate;
 		border-spacing: 10px;
-		height: 90px;
+		min-height: 160px;
+		padding-bottom: 2px;
 	}
 
-	.drop_zone{
-		width: 50%;
+	#top_drop_zones{
+		width: 100%;
+		min-height: 80px;
+		display: table;
+		table-layout: fixed;
+	}
+
+	.drop_zone{;
+		height: 80px;
+		/*line-height: 80px;*/
 		display: table-cell;
 		vertical-align: middle;
-		margin: 2%;
+		text-align: center;
 		border: 2px;
 		border-style: dashed;
 		border-color: #aaaaaa;
+		background-color: #f0f6fb;
+	}
+
+	#optional_drop_zone{
+		width: calc(100%-20px);
+		height: 60px;
+		line-height: 60px;
+		margin: 10px;
+		margin-top: 0px;
+		border: 2px;
+		border-style: dashed;
+		border-color: #aaaaaa;
+		color: #888888;
 		background-color: #f0f6fb;
 	}
 
