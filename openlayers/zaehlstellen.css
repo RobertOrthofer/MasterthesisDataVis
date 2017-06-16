@@ -27,9 +27,17 @@
 		position: absolute;
 		top: 0px;
 		right: 0px;
-		width: 25%;
+		width: calc(30% + 2px);
+		height: 100%;
 		text-align: center;
 		min-width: 280px;
+		background-color: #f0f6fb;
+		border-style: solid;
+		border-color: darkorange;
+		border-right: 0px;
+		border-top: 0px;
+		border-bottom: 0px;
+		overflow: auto;
 	}
 
 	#json_info_div{
@@ -90,7 +98,7 @@
 		-webkit-user-select: none; /* Chrome/Safari */
 		-moz-user-select: none; /* Firefox */
 		-ms-user-select: none; /* IE10+ */
-		-webkit-transition-duration: 0.4s; /* Safari */
+		z-index: 100;
 	}
 
 	#drop_zone_holder{
@@ -103,6 +111,8 @@
 		border-spacing: 10px;
 		min-height: 160px;
 		padding-bottom: 2px;
+		transition: transform 0.3s;
+		z-index: 2;
 	}
 
 	#top_drop_zones{
@@ -110,6 +120,10 @@
 		min-height: 80px;
 		display: table;
 		table-layout: fixed;
+		/* Make Text Unselectable */
+		-webkit-user-select: none; /* Chrome/Safari */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* IE10+ */
 	}
 
 	.drop_zone{;
@@ -122,6 +136,10 @@
 		border-style: dashed;
 		border-color: #aaaaaa;
 		background-color: #f0f6fb;
+		/* Make Text Unselectable */
+		-webkit-user-select: none; /* Chrome/Safari */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* IE10+ */
 	}
 
 	#optional_drop_zone{
@@ -135,6 +153,14 @@
 		border-color: #aaaaaa;
 		color: #888888;
 		background-color: #f0f6fb;
+		/* Make Text Unselectable */
+		-webkit-user-select: none; /* Chrome/Safari */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* IE10+ */
+	}
+
+	#menuBelowDropZones{
+		transition: transform 0.3s;
 	}
 
 	#hideSelectionHolder{
@@ -213,7 +239,7 @@ button::-moz-focus-inner {
 	}
 
 	#choseFieldDiv2{
-		z-index: 2;
+		z-index: 1;
 		height: 67px;
 		top: -170px;
 	}
@@ -256,7 +282,7 @@ button::-moz-focus-inner {
 
 	.styled-select select {
 	   background: transparent;
-	margin-right: 50px;
+	   margin-right: 50px;
 	   width: 100%;
 	   padding: 0px;
 	   font-size: 12px;
