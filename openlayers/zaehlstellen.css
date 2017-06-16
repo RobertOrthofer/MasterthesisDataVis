@@ -18,7 +18,7 @@
 		margin: 0;
 		padding: 0;
 		width: 75%;
-		max-width: calc(100% - 280px);
+		max-width: calc(70% - 2px);
 		height: 100%;
 		z-index: 0;
 	}
@@ -382,6 +382,7 @@ button::-moz-focus-inner {
 		transition-duration: 0.4s;
 		cursor: pointer;
 		border: 0.2px solid #ffffff;
+		border-radius: 2px;
 	}
 	.input-check:hover {
 		border-color: #A4C4E8;
@@ -517,12 +518,10 @@ button::-moz-focus-inner {
 		display: inline-block;
 		font-size: 12px;
 		margin: 2px 2px;
-		-webkit-transition-duration: 0.4s; /* Safari */
-		transition-duration: 0.4s;
+		-webkit-transition-duration: 0.2s; /* Safari */
+		transition-duration: 0.2s;
 		cursor: pointer;
-	}
-
-	.timesliderButton {
+		border-radius: 2px;
 		background-color: #4A74AA;
 		color: white;
 		border: 1px solid #000000;
@@ -538,22 +537,18 @@ button::-moz-focus-inner {
 	.other_button {
 		background-color: #4A74AA;
 		display: inline-block;
-		border: none;
-		padding: 2px 2px;
+		padding: 4px 8px;
 		text-align: center;
 		font-weight: bold;
 		display: inline-block;
 		font-size: 12px;
-		margin: 2px 2px;
-		-webkit-transition-duration: 0.4s; /* Safari */
-		transition-duration: 0.4s;
+		margin: 0px;
+		-webkit-transition-duration: 0.2s; /* Safari */
+		transition-duration: 0.2s;
 		cursor: pointer;
-	}
-
-	.other_button {
-		background-color: #4A74AA;
 		color: white;
-		border: 1px solid #000000;
+		border: 1px solid black;
+		border-radius: 2px;
 	}
 
 	.other_button:hover {
@@ -669,23 +664,43 @@ button::-moz-focus-inner {
 		left: 24px;
 	}
 
-
 	#layer_panel{
 		position: absolute;
-		top: 7px;
-		right: 10px;
+		top: 0px;
+		right: 0px;
 		overflow: visible;
 		z-index:9999;
-
+		padding: 0 0 3px 3px;
+		background-color: rgba(255,255,255,.4);
+		border-radius: 0 0 0 10px;
 	}
-	#basemap{
+
+	#layer_panel:hover{
+		background-color: rgba(255,255,255,.7);
+	}
+
+	.other_button.layer_button{
 		float: left;
+		font-size: 13px;
+		border: 0px;
+		padding-top: 8px;
+		padding-bottom: 6px;
+		margin-right: 1px;
+		background-color: rgba(0,60,136,.5);
+	}
+
+	.other_button.layer_button:hover{
+		background-color: rgba(0,60,136,.7);
+	}
+
+	#basemap{
+		border-radius: 0px 0px 0px 10px;
 	}
 
 	#topographic{
-		float: left;
+		border-radius: 0px;
 	}
 
 	#no_background{
-		float: left;
+		border-radius: 0px;
 	}
