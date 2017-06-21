@@ -27,50 +27,50 @@ function hideDropZone(){
 //------------- show/hide current Selection-DIV (ID = id of clicked button)------------------------------------------------------
 function showCoordsSelection() {
     // if other selection is open, close it
-    if (selectionStatus.date == true) {
+    if (dataVis.selectionStatus.date == true) {
         showDateSelection();
     };
 
     console.log("hide/show Coordinate Selection ");
 
     // calculating direction of div (up or down)
-    if (selectionStatus.coords == false) {
+    if (dataVis.selectionStatus.coords == false) {
         document.getElementById("hideCoordSelection").innerHTML = "△";
         document.getElementById("hideCoordSelection").style.backgroundColor = "#4A74AA";
         document.getElementById('choseFieldDiv1').style.transform = "translateY(102px)";
         document.getElementById("menuBelowSelection").style.transform = "translateY(-60px)";
-        selectionStatus.coords = true;
+        dataVis.selectionStatus.coords = true;
     } else {
         document.getElementById("hideCoordSelection").innerHTML = "▽";
         document.getElementById("hideCoordSelection").style.backgroundColor = "#A4C4E8";
         document.getElementById('choseFieldDiv1').style.transform = "translateY(-83px)";
         document.getElementById("menuBelowSelection").style.transform = "translateY(-248px)";
-        selectionStatus.coords = false;
+        dataVis.selectionStatus.coords = false;
     }
 }
 
 function showDateSelection() {
     // if other selection is open, close it
-    if (selectionStatus.coords == true) {
+    if (dataVis.selectionStatus.coords == true) {
         showCoordsSelection();
     };
 
     console.log("hide/show Data Selection ");
 
     // calculating direction of div (up or down)
-    if (selectionStatus.date == false) {
+    if (dataVis.selectionStatus.date == false) {
         document.getElementById("hideDataSelection").innerHTML = "△";
         document.getElementById("hideDataSelection").style.backgroundColor = "#4A74AA";
         //document.getElementById('choseFieldDiv2').style.transform = "translateY(23px)";
         //document.getElementById("menuBelowSelection").style.transform = "translateY(-140px)";
         document.getElementById('choseFieldDiv2').style.transform = "translateY(-17px)";
         document.getElementById("menuBelowSelection").style.transform = "translateY(-180px)";
-        selectionStatus.date = true;
+        dataVis.selectionStatus.date = true;
     } else {
         document.getElementById("hideDataSelection").innerHTML = "▽";
         document.getElementById("hideDataSelection").style.backgroundColor = "#A4C4E8";
         document.getElementById('choseFieldDiv2').style.transform = "translateY(-84px)";
         document.getElementById("menuBelowSelection").style.transform = "translateY(-247px)";
-        selectionStatus.date = false;
+        dataVis.selectionStatus.date = false;
     }
 }

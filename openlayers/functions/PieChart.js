@@ -44,7 +44,7 @@ function handleFileSelect3(evt) {
         if (r == true) {
             console.log("Override File");
             // now clear all old options from Data-Selection (not needed for PieCharts?)
-            /*zaehlstellen_data = [];
+            /*dataVis.zaehlstellen_data = [];
             var select = document.getElementById("dateSelect");
             var length = select.options.length;
             for (i = 0; i < length; i++) {
@@ -70,8 +70,8 @@ function handleFileSelect3(evt) {
         if (f.name.substr(f.name.length - 3) === "csv") { // check if filetiype is csv
             PieChartData = csvToJSON(reader.result);
         } else {
-            zaehlstellen_data = JSON.parse(reader.result); // global, better method?
-            console.log(zaehlstellen_data);
+            dataVis.zaehlstellen_data = JSON.parse(reader.result); // global, better method?
+            console.log(dataVis.zaehlstellen_data);
         }
 
         document.getElementById("renderDataButton").style.visibility = "visible";
@@ -79,7 +79,7 @@ function handleFileSelect3(evt) {
         document.getElementById("choseFieldDiv2").style.visibility = "visible";
         document.getElementById("hideSelectionHolder").style.visibility = "visible";
 
-        askFields2(zaehlstellen_data[0], 2); // only first feature is needed for property names
+        askFields2(dataVis.zaehlstellen_data[0], 2); // only first feature is needed for property names
 
         document.getElementById("renderDataButton").addEventListener('click', function() {
             applyDate();

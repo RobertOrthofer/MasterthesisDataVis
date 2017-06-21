@@ -40,63 +40,69 @@ function csvToGeoJSON() { //csv = reader.result
 
 
 
-// ------------- handle File drop of Data-JSON -------------------------------------------------------------->
+//---------- Handle File Selection (Coordinates-JSON)------------------------------------------------------>
 function handleCoordsFile(evt) {
+    console.log("handleCoordsFile");
     evt.stopPropagation();
     evt.preventDefault();
 
     var files = evt.dataTransfer.files; // FileList object.
 
-    if (typeof(currentFiles.Data) !== "undefined") {
+    if (typeof(dataVis.currentFiles.Coords) !== "undefined") {
         var r = confirm("Override existing File?"); // ask User
         if (r == true) {
             console.log("Override File");
-            // now clear all old options from Data-Selection
-            zaehlstellen_data = [];
-            var select = document.getElementById("dateSelect");
-            var length = select.options.length;
+            // now clear all old options from Coords- and Match-ID-Selection
+            var select = document.getElementById("xSelect");
+            var select2 = document.getElementById("coordIDSelect");
+            var select3 = document.getElementById("ySelect");
+            var length = select.options.length; // the 2 selects should have same options
             for (i = 0; i < length; i++) {
                 select.options[0] = null;
+                select2.options[0] = null;
+                select3.options[0] = null;
             }
         } else {
             console.log("Do nothing");
             return;
         }
     }
-
     // files is a FileList of File objects. List some properties.
     var output = [];
     var f = files[0];
+
     output.push('<li><strong>', escape(f.name), '</strong>  - ',
         f.size, ' bytes, last modified: ',
         f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
+    dataVis.currentFiles.Coords = f.name;
 
-    currentFiles.Data = f.name;
-
+    coords_json = {};
     var reader = new FileReader(); // to read the FileList object
     reader.onload = function(event) { // Reader ist asynchron, wenn reader mit operation fertig ist, soll das hier (JSON.parse) ausgeführt werden, sonst ist es noch null
+        var columnNames = [];
         if (f.name.substr(f.name.length - 3) === "csv") { // check if filetiype is csv
-            zaehlstellen_data = csvToJSON(reader.result);
+            dataVis.currentFiles.CoordsFileType = "csv";
+            columnNames = getColumnNames(reader.result);
+            window.csv = reader.result; // temporary save reader.result into global variable, until geoJSON can be created with user-inputs
+            populateSelection(columnNames, 1);
+        } else if (f.name.substr(f.name.length - 4) === "json") {
+            dataVis.currentFiles.CoordsFileType = "JSON";
+            coords_json = JSON.parse(reader.result);
+            populateSelection(columnNames, 1);
         } else {
-            zaehlstellen_data = JSON.parse(reader.result); // global, better method?
-            console.log(zaehlstellen_data);
+            alert("Unrecognized Filetype. Please Check your input (only .csv or .json allowed)");
         }
 
-        document.getElementById("renderDataButton").style.visibility = "visible";
-        document.getElementById("hideDataSelection").style.visibility = "visible";
-        document.getElementById("choseFieldDiv2").style.visibility = "visible";
+        document.getElementById("hideCoordSelection").style.visibility = "visible";
+        document.getElementById("choseFieldDiv1").style.visibility = "visible";
+        document.getElementById("renderCoordinatesButton").style.visibility = "visible";
         document.getElementById("hideSelectionHolder").style.visibility = "visible";
 
-        populateSelection(zaehlstellen_data[0], 2); // only first feature is needed for property names
-
-        document.getElementById("renderDataButton").addEventListener('click', function() {
-            applyDate();
+        document.getElementById("renderCoordinatesButton").addEventListener('click', function() {
+            add_zaehlstellen(coords_json);  // conversion from csv to json in add_zaehlstellen
         }, false);
     };
-    reader.readAsText(f);
+    reader.readAsText(f, "UTF-8");
 
-    // global variable for selection
-    selectedWeekdays = [0, 1, 2, 3, 4, 5, 6]; // select all weekdays before timeslider gets initialized
-    oldSelectedStreetNames = [] // Array for street names, if same amount of points are selected, but different streetnames -> redraw chart completely
-    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+    document.getElementById('list_coords').innerHTML = '<ul style="margin: 0px;">' + output.join('') + '</ul>';
 }
