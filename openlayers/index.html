@@ -13,6 +13,10 @@
   <script type="text/javascript" src="Chart/Chart.js"></script>   <!--via npm -->
   <script src="functions/main.js"></script>
   <script src="functions/handleDomEvents.js"></script>
+  <script src="functions/handleDataFile.js"></script>
+  <script src="functions/handleCoordsFile.js"></script>
+  <script src="functions/handlePiechartFile.js"></script>
+  <script src="functions/PieChart.js"></script>
   <script src="proj4js/proj4.js"></script>
 
  </head>
@@ -31,8 +35,8 @@
         <!--<div id="hideDropZone" onclick="hideDropZone()">  △ &nbsp;&nbsp;&nbsp;&nbsp; Hide Drop Zones  &nbsp;&nbsp;&nbsp;&nbsp; △  </div>-->
 		<div id="drop_zone_holder">
             <div id="top_drop_zones">
-			    <div id="drop_zone1" class="drop_zone">Drop Coordinate JSON</div>
-			    <div id="drop_zone2" class="drop_zone">Drop Data JSON</div>
+			    <div id="drop_zone_data_file" class="drop_zone">Drop Coordinate JSON</div>
+			    <div id="drop_zone_coords_file" class="drop_zone">Drop Data JSON</div>
             </div>
             <div id="bottom_drop_zones">
                 <div id="optional_drop_zone">(Optional) Overlay Diagram Data JSON</div>

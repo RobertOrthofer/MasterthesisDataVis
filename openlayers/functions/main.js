@@ -11,6 +11,10 @@ var selectionStatus = { // save state of JSON drop-down menu, so they dont have 
 
 var currentFiles = {}; // save filenames of dropped data
 
+//global data variables
+var zaehlstellen_data;
+var PieChartData;
+
 
 //import Chart from './node_modules/chart.js/src/chart.js';
 
@@ -22,7 +26,7 @@ function initMap() {
 
     viewpoint = new ol.View({
         center: ol.proj.fromLonLat([13.4, 47.4633]),
-        zoom: 8
+        zoom: 7
     });
     map.setView(viewpoint);
 
@@ -260,229 +264,18 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
 //------- Drag and Drop -------------------->
 // Initiate the Dropzone
 function init_dropzone() {
-    var dropZone1 = document.getElementById('drop_zone1');
+    var dropZone1 = document.getElementById('drop_zone_data_file');
     dropZone1.addEventListener('dragover', handleDragOver, false);
-    dropZone1.addEventListener('drop', handleFileSelect1, false);
+    dropZone1.addEventListener('drop', handleDataFile, false);
 
-    var dropZone2 = document.getElementById('drop_zone2');
+    var dropZone2 = document.getElementById('drop_zone_coords_file');
     dropZone2.addEventListener('dragover', handleDragOver, false);
-    dropZone2.addEventListener('drop', handleFileSelect2, false);
+    dropZone2.addEventListener('drop', handleCoordsFile, false);
+
+    var dropZone3 = document.getElementById('optional_drop_zone');
+    dropZone3.addEventListener('dragover', handleDragOver, false);
+    dropZone3.addEventListener('drop', handlePiechartFile, false);
 }
-
-//---------- Handle File Selection (Coordinates-JSON)------------------------------------------------------>
-function handleFileSelect1(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-
-    var files = evt.dataTransfer.files; // FileList object.
-
-    if (typeof(currentFiles.Coords) !== "undefined") {
-        var r = confirm("Override existing File?"); // ask User
-        if (r == true) {
-            console.log("Override File");
-            // now clear all old options from Coords- and Match-ID-Selection
-            var select = document.getElementById("xSelect");
-            var select2 = document.getElementById("coordIDSelect");
-            var select3 = document.getElementById("ySelect");
-            var length = select.options.length; // the 2 selects should have same options
-            for (i = 0; i < length; i++) {
-                select.options[0] = null;
-                select2.options[0] = null;
-                select3.options[0] = null;
-            }
-        } else {
-            console.log("Do nothing");
-            return;
-        }
-    }
-    // files is a FileList of File objects. List some properties.
-    var output = [];
-    f = files[0];
-
-    output.push('<li><strong>', escape(f.name), '</strong>  - ',
-        f.size, ' bytes, last modified: ',
-        f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
-    currentFiles.Coords = f.name;
-
-    coords_json = {};
-    var reader = new FileReader(); // to read the FileList object
-    reader.onload = function(event) { // Reader ist asynchron, wenn reader mit operation fertig ist, soll das hier (JSON.parse) ausgeführt werden, sonst ist es noch null
-        var columnNames = [];
-        if (f.name.substr(f.name.length - 3) === "csv") { // check if filetiype is csv
-            currentFiles.CoordsFileType = "csv";
-            columnNames = getColumnNames(reader.result);
-            window.csv = reader.result; // temporary save reader.result into global variable, until geoJSON can be created with user-inputs
-            askFields2(columnNames, 1);
-        } else if (f.name.substr(f.name.length - 4) === "json") {
-            currentFiles.CoordsFileType = "JSON";
-            coords_json = JSON.parse(reader.result);
-            askFields2(columnNames, 1);
-        } else {
-            alert("Unrecognized Filetype. Please Check your input (only .csv or .json allowed)");
-        }
-
-        document.getElementById("hideCoordSelection").style.visibility = "visible";
-        document.getElementById("choseFieldDiv1").style.visibility = "visible";
-        document.getElementById("renderCoordinatesButton").style.visibility = "visible";
-        document.getElementById("hideSelectionHolder").style.visibility = "visible";
-
-        //askFields(coords_json.features[0], 1);  // only first feature is needed for property names
-        document.getElementById("renderCoordinatesButton").addEventListener('click', function() {
-            add_zaehlstellen(coords_json);
-        }, false);
-        //console.log('added Event Listener to apply button');
-        //add_zaehlstellen(coords_json);
-    };
-    reader.readAsText(f, "UTF-8");
-
-    document.getElementById('list_coords').innerHTML = '<ul style="margin: 0px;">' + output.join('') + '</ul>';
-}
-
-function getColumnNames(csv) {
-    var lines = csv.split(/[\r\n]+/);
-    return lines[0].split(","); //returns array with column names
-}
-
-// convert .csv to geoJSON
-function csvToGeoJSON() { //csv = reader.result
-    var lines = csv.split(/[\r\n]+/); // split for windows and mac csv (newline or carriage return)
-    delete window.csv; // reader.result from drag&drop not needed anymore
-    var headers = lines[0].split(","); //not needed?
-    var matchID = document.getElementById("coordIDSelect").value;
-    var xColumn = document.getElementById("xSelect").value;
-    var yColumn = document.getElementById("ySelect").value;
-
-    // get the positions of the seleted columns in the header
-    var positionMatchID = headers.indexOf(matchID);
-    var positionX = headers.indexOf(xColumn);
-    var positionY = headers.indexOf(yColumn);
-
-    var obj_array = []
-    for (var i = 1; i < lines.length - 1; i++) {
-        var json_obj = {
-            "type": "Feature"
-        };
-        var currentline = lines[i].split(",");
-        //for(var j=0;j<headers.length;j++){
-        json_obj["geometry"] = {
-            "type": "Point",
-            "coordinates": [parseFloat(currentline[positionX]), parseFloat(currentline[positionY])]
-        };
-        json_obj["properties"] = {};
-        json_obj["properties"][matchID] = currentline[positionMatchID]; // get the name of zaehlstellen variable
-        obj_array.push(json_obj);
-    };
-
-    var complete_geojson = {
-            "type": "FeatureCollection",
-            "features": obj_array // all objects of the csv
-        }
-        //	alert(complete_geojson);
-    return complete_geojson; //return geoJSON
-}
-
-// ------------- handle File drop of Data-JSON -------------------------------------------------------------->
-function handleFileSelect2(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-
-    var files = evt.dataTransfer.files; // FileList object.
-
-    if (typeof(currentFiles.Data) !== "undefined") {
-        var r = confirm("Override existing File?"); // ask User
-        if (r == true) {
-            console.log("Override File");
-            // now clear all old options from Data-Selection
-            debugger
-            zaehlstellen_data = [];
-            var select = document.getElementById("dateSelect");
-            var length = select.options.length;
-            for (i = 0; i < length; i++) {
-                select.options[0] = null;
-            }
-        } else {
-            console.log("Do nothing");
-            return;
-        }
-    }
-
-    // files is a FileList of File objects. List some properties.
-    var output = [];
-    f = files[0];
-    output.push('<li><strong>', escape(f.name), '</strong>  - ',
-        f.size, ' bytes, last modified: ',
-        f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
-
-    currentFiles.Data = f.name;
-
-    var reader = new FileReader(); // to read the FileList object
-    reader.onload = function(event) { // Reader ist asynchron, wenn reader mit operation fertig ist, soll das hier (JSON.parse) ausgeführt werden, sonst ist es noch null
-        if (f.name.substr(f.name.length - 3) === "csv") { // check if filetiype is csv
-            zaehlstellen_data = csvToJSON(reader.result);
-        } else {
-            zaehlstellen_data = JSON.parse(reader.result); // global, better method?
-            console.log(zaehlstellen_data);
-            debugger
-        }
-
-        document.getElementById("renderDataButton").style.visibility = "visible";
-        document.getElementById("hideDataSelection").style.visibility = "visible";
-        document.getElementById("choseFieldDiv2").style.visibility = "visible";
-        document.getElementById("hideSelectionHolder").style.visibility = "visible";
-
-        askFields2(zaehlstellen_data[0], 2); // only first feature is needed for property names
-
-        document.getElementById("renderDataButton").addEventListener('click', function() {
-            applyDate();
-        }, false);
-    };
-    reader.readAsText(f);
-
-    // global variable for selection
-    selectedWeekdays = [0, 1, 2, 3, 4, 5, 6]; // select all weekdays before timeslider gets initialized
-    oldSelectedStreetNames = [] // Array for street names, if same amount of points are selected, but different streetnames -> redraw chart completely
-    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
-}
-
-// convert data (.csv) to JSON
-function csvToJSON(csv) { //csv = reader.result
-    var lines = csv.split(/[\r\n]+/);
-    //var result = [];
-    var headers = lines[0].split(",");
-
-    //calculate headers.length and lines.length one time only for performance reasons
-    var linesLength = lines.length; // = number of zaehlstellen
-    var headerLength = headers.length; // = number of dates the data is provided
-
-    var splittedLinesArray = []; // split all the lines in advance, so they dont have to be split for every single value
-    for (var k = 1; k < linesLength; k++) {
-        var thisLine = lines[k].split(",");
-
-        if (thisLine == "") { // if-clause, because csv could have empty lines at the end
-            break;
-        }
-
-        splittedLinesArray.push(thisLine);
-    }
-
-    var obj_array = [];
-    var dateName = headers[0];
-
-    for (var i = 1; i < headerLength; i++) { // for every date, last one is empty (because csv has )
-        var json_obj = {};
-        json_obj[dateName] = headers[i]; // headers is dates (top row of csv)
-        for (var j = 0; j < splittedLinesArray.length; j++) { // for every zaehlstelle...
-            //console.log("j:  " + j);
-            var currentZaehlstelle = splittedLinesArray[j][0]; // takes name of current zaehlstelle (very left column of csv)
-            var currentValue = splittedLinesArray[j][i];
-            json_obj[currentZaehlstelle] = parseInt(currentValue);
-        }
-        obj_array.push(json_obj);
-    };
-    return obj_array; //return data-JSON
-}
-
-
 
 function applyDate() {
     console.log("Apply-Date Button pressed");
@@ -888,7 +681,7 @@ function viewAerial() {
 }
 
 
-/////////  TEST changing array protoype to compare (arr1.equals(arr2)) arrays, not part of a function?
+/////////  TEST changing array protoype to compare (arr1.equals(arr2)) arrays, not part of a function
 Array.prototype.equals = function(array, strict) {
     if (!array)
         return false;
@@ -1018,7 +811,7 @@ function autoPlay() {
 };
 
 //----------Populating Selections for ID and Coordinates after Drag&Drop--------------------------------------------------
-function askFields2(columnNames, option) {
+function populateSelection(columnNames, option) {
     // @columnNames: Array with column Names as Strings
     // @option:
     //		1: Coordinates
@@ -1195,76 +988,6 @@ function askFields(first_feature, option) {
             } // end of case 2 (=Data-json)
             break;
     } // end of switch
-}
-
-//------------- show/hide current Selection-DIV (ID = id of clicked button)------------------------------------------------------
-function showCoordsSelection() {
-    // if other selection is open, close it
-    if (selectionStatus.date == true) {
-        showDateSelection();
-    };
-
-    console.log("hide/show Coordinate Selection ");
-
-    // calculating direction of div (up or down)
-    if (selectionStatus.coords == false) {
-        document.getElementById("hideCoordSelection").innerHTML = "△";
-        document.getElementById("hideCoordSelection").style.backgroundColor = "#4A74AA";
-        document.getElementById('choseFieldDiv1').style.transform = "translateY(102px)";
-        document.getElementById("menuBelowSelection").style.transform = "translateY(-60px)";
-        selectionStatus.coords = true;
-    } else {
-        document.getElementById("hideCoordSelection").innerHTML = "▽";
-        document.getElementById("hideCoordSelection").style.backgroundColor = "#A4C4E8";
-        document.getElementById('choseFieldDiv1').style.transform = "translateY(-83px)";
-        document.getElementById("menuBelowSelection").style.transform = "translateY(-248px)";
-        selectionStatus.coords = false;
-    }
-}
-
-function hideDropZone(){
-    console.log("hide/show Drop Zones ");
-
-    // calculating direction of div (up or down)
-    if (document.getElementById("hideDropZone").innerHTML == "▲") {
-        console.log("hide Drop Zones");
-        document.getElementById("hideDropZone").innerHTML = "▼";
-        //document.getElementById('choseFieldDiv1').style.transform = "translateY(102px)";
-        //document.getElementById("menuBelowSelection").style.transform = "translateY(-60px)";
-    } else {
-        console.log("show Drop Zones");
-        document.getElementById("hideDropZone").innerHTML = "▲";
-        //document.getElementById('choseFieldDiv1').style.transform = "translateY(-83px)";
-        //document.getElementById("menuBelowSelection").style.transform = "translateY(-248px)";
-    }
-}
-
-
-
-function showDateSelection() {
-    // if other selection is open, close it
-    if (selectionStatus.coords == true) {
-        showCoordsSelection();
-    };
-
-    console.log("hide/show Data Selection ");
-
-    // calculating direction of div (up or down)
-    if (selectionStatus.date == false) {
-        document.getElementById("hideDataSelection").innerHTML = "△";
-        document.getElementById("hideDataSelection").style.backgroundColor = "#4A74AA";
-        //document.getElementById('choseFieldDiv2').style.transform = "translateY(23px)";
-        //document.getElementById("menuBelowSelection").style.transform = "translateY(-140px)";
-        document.getElementById('choseFieldDiv2').style.transform = "translateY(-17px)";
-        document.getElementById("menuBelowSelection").style.transform = "translateY(-180px)";
-        selectionStatus.date = true;
-    } else {
-        document.getElementById("hideDataSelection").innerHTML = "▽";
-        document.getElementById("hideDataSelection").style.backgroundColor = "#A4C4E8";
-        document.getElementById('choseFieldDiv2').style.transform = "translateY(-84px)";
-        document.getElementById("menuBelowSelection").style.transform = "translateY(-247px)";
-        selectionStatus.date = false;
-    }
 }
 
 //===============================================================================================================
