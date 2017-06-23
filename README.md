@@ -1,6 +1,8 @@
-# MasterthesisDataVis
+# [Mapoch](https://robertorthofer.github.io/mapoch/openlayers/)
 
 Robert Orthofer's Master Thesis in Progress
+
+[Try the current version live in your browser!](https://robertorthofer.github.io/mapoch/openlayers/)
 
 ## Getting Started
 
@@ -14,7 +16,7 @@ Robert Orthofer's Master Thesis in Progress
 
 Clone a copy of this project by running:
 ```
-git clone https://github.com/RobertOrthofer/MasterthesisDataVis.git
+git clone https://github.com/RobertOrthofer/mapoch.git
 ```
 
 start the local webserver at the root directory by running
