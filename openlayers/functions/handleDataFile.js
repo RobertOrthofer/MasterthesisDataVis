@@ -55,12 +55,12 @@ function handleDataFile(evt) {
 
     var files = evt.dataTransfer.files; // FileList object.
 
-    if (typeof(dataVis.currentFiles.Data) !== "undefined") {
+    if (typeof(mapoch.currentFiles.Data) !== "undefined") {
         var r = confirm("Override existing File?"); // ask User
         if (r == true) {
             console.log("Override File");
             // now clear all old options from Data-Selection
-            dataVis.zaehlstellen_data = [];
+            mapoch.zaehlstellen_data = [];
             var select = document.getElementById("dateSelect");
             var length = select.options.length;
             for (i = 0; i < length; i++) {
@@ -79,15 +79,15 @@ function handleDataFile(evt) {
         f.size, ' bytes, last modified: ',
         f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
 
-    dataVis.currentFiles.Data = f.name;
+    mapoch.currentFiles.Data = f.name;
 
     var reader = new FileReader(); // to read the FileList object
     reader.onload = function(event) { // Reader ist asynchron, wenn reader mit operation fertig ist, soll das hier (JSON.parse) ausgeführt werden, sonst ist es noch null
         if (f.name.substr(f.name.length - 3) === "csv") { // check if filetiype is csv
-            dataVis.zaehlstellen_data = csvToJSON(reader.result);
+            mapoch.zaehlstellen_data = csvToJSON(reader.result);
         } else {
-            dataVis.zaehlstellen_data = JSON.parse(reader.result); // global, better method?
-            console.log(dataVis.zaehlstellen_data);
+            mapoch.zaehlstellen_data = JSON.parse(reader.result); // global, better method?
+            console.log(mapoch.zaehlstellen_data);
         }
 
         document.getElementById("renderDataButton").style.visibility = "visible";
@@ -95,7 +95,7 @@ function handleDataFile(evt) {
         document.getElementById("choseFieldDiv2").style.visibility = "visible";
         document.getElementById("hideSelectionHolder").style.visibility = "visible";
 
-        askFields(dataVis.zaehlstellen_data[0], 2); // only first feature is needed for property names
+        askFields(mapoch.zaehlstellen_data[0], 2); // only first feature is needed for property names
 
         document.getElementById("renderDataButton").addEventListener('click', function() {
             applyDate();

@@ -27,50 +27,50 @@ function hideDropZone(){
 //------------- show/hide current Selection-DIV (ID = id of clicked button)------------------------------------------------------
 function showCoordsSelection() {
     // if other selection is open, close it
-    if (dataVis.selectionStatus.date == true) {
+    if (mapoch.selectionStatus.date == true) {
         showDateSelection();
     };
 
     console.log("hide/show Coordinate Selection ");
 
     // calculating direction of div (up or down)
-    if (dataVis.selectionStatus.coords == false) {
+    if (mapoch.selectionStatus.coords == false) {
         document.getElementById("hideCoordSelection").innerHTML = "△";
         document.getElementById("hideCoordSelection").style.backgroundColor = "#4A74AA";
         document.getElementById('choseFieldDiv1').style.transform = "translateY(102px)";
         document.getElementById("menuBelowSelection").style.transform = "translateY(-60px)";
-        dataVis.selectionStatus.coords = true;
+        mapoch.selectionStatus.coords = true;
     } else {
         document.getElementById("hideCoordSelection").innerHTML = "▽";
         document.getElementById("hideCoordSelection").style.backgroundColor = "#A4C4E8";
         document.getElementById('choseFieldDiv1').style.transform = "translateY(-83px)";
         document.getElementById("menuBelowSelection").style.transform = "translateY(-248px)";
-        dataVis.selectionStatus.coords = false;
+        mapoch.selectionStatus.coords = false;
     }
 }
 
 function showDateSelection() {
     // if other selection is open, close it
-    if (dataVis.selectionStatus.coords == true) {
+    if (mapoch.selectionStatus.coords == true) {
         showCoordsSelection();
     };
 
     console.log("hide/show Data Selection ");
 
     // calculating direction of div (up or down)
-    if (dataVis.selectionStatus.date == false) {
+    if (mapoch.selectionStatus.date == false) {
         document.getElementById("hideDataSelection").innerHTML = "△";
         document.getElementById("hideDataSelection").style.backgroundColor = "#4A74AA";
         //document.getElementById('choseFieldDiv2').style.transform = "translateY(23px)";
         //document.getElementById("menuBelowSelection").style.transform = "translateY(-140px)";
         document.getElementById('choseFieldDiv2').style.transform = "translateY(-17px)";
         document.getElementById("menuBelowSelection").style.transform = "translateY(-180px)";
-        dataVis.selectionStatus.date = true;
+        mapoch.selectionStatus.date = true;
     } else {
         document.getElementById("hideDataSelection").innerHTML = "▽";
         document.getElementById("hideDataSelection").style.backgroundColor = "#A4C4E8";
         document.getElementById('choseFieldDiv2').style.transform = "translateY(-84px)";
         document.getElementById("menuBelowSelection").style.transform = "translateY(-247px)";
-        dataVis.selectionStatus.date = false;
+        mapoch.selectionStatus.date = false;
     }
 }

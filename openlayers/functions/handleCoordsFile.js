@@ -48,7 +48,7 @@ function handleCoordsFile(evt) {
 
     var files = evt.dataTransfer.files; // FileList object.
 
-    if (typeof(dataVis.currentFiles.Coords) !== "undefined") {
+    if (typeof(mapoch.currentFiles.Coords) !== "undefined") {
         var r = confirm("Override existing File?"); // ask User
         if (r == true) {
             console.log("Override File");
@@ -74,19 +74,19 @@ function handleCoordsFile(evt) {
     output.push('<li><strong>', escape(f.name), '</strong>  - ',
         f.size, ' bytes, last modified: ',
         f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
-    dataVis.currentFiles.Coords = f.name;
+    mapoch.currentFiles.Coords = f.name;
 
     coords_json = {};
     var reader = new FileReader(); // to read the FileList object
     reader.onload = function(event) { // Reader ist asynchron, wenn reader mit operation fertig ist, soll das hier (JSON.parse) ausgeführt werden, sonst ist es noch null
         var columnNames = [];
         if (f.name.substr(f.name.length - 3) === "csv") { // check if filetiype is csv
-            dataVis.currentFiles.CoordsFileType = "csv";
+            mapoch.currentFiles.CoordsFileType = "csv";
             columnNames = getColumnNames(reader.result);
             window.csv = reader.result; // temporary save reader.result into global variable, until geoJSON can be created with user-inputs
             populateSelection(columnNames, 1);
         } else if (f.name.substr(f.name.length - 4) === "json") {
-            dataVis.currentFiles.CoordsFileType = "JSON";
+            mapoch.currentFiles.CoordsFileType = "JSON";
             coords_json = JSON.parse(reader.result);
             populateSelection(columnNames, 1);
         } else {

@@ -7,7 +7,7 @@ var selectedOptions = {}; //global variable for selecting matching id, coordinat
 
 
 //global data variables
-var dataVis = {
+var mapoch = {
     currentFiles: {},// save filenames of dropped data
     zaehlstellen_data: [],
     PieChartData: {},
@@ -90,7 +90,7 @@ function add_zaehlstellen(coords_json) {
     selectedOptions.epsg = epsgField;
 
     // if coordinates are csv, make an aproppriate JSON with selected x and y coordinates and Match-ID as property
-    if (dataVis.currentFiles.CoordsFileType === "csv") {
+    if (mapoch.currentFiles.CoordsFileType === "csv") {
         coords_json = csvToGeoJSON(); // only needs window.csv, global deleted later
     }
 
@@ -175,7 +175,7 @@ function add_zaehlstellen(coords_json) {
     map.getView().fit(extent, map.getSize());
 
     geometryLayer.set('name', idField[idField.length - 1]); // name layer after last item in idField-array
-    if (dataVis.zaehlstellen_data > 0) {
+    if (mapoch.zaehlstellen_data > 0) {
         console.log("updating style, because data is already applied");
         updateStyle(0);
         if (typeof(selectedOptions.dateField) !== "undefined") {
@@ -190,9 +190,9 @@ function add_zaehlstellen(coords_json) {
 // calculate min and max values for current day (for radius)
 function getMaxThisDay(y) { // y = integer of current day (according to timeslider)
     var max_thisDay = -Infinity;
-    for (var k in dataVis.zaehlstellen_data[y]) { // of for every zaehlstelle
-        if (typeof dataVis.zaehlstellen_data[y][k] == 'number') { // only numbers, one item is the date
-            var amount = dataVis.zaehlstellen_data[y][k];
+    for (var k in mapoch.zaehlstellen_data[y]) { // of for every zaehlstelle
+        if (typeof mapoch.zaehlstellen_data[y][k] == 'number') { // only numbers, one item is the date
+            var amount = mapoch.zaehlstellen_data[y][k];
             if (amount > max_thisDay) {
                 max_thisDay = amount
             }; // maximum
@@ -222,7 +222,7 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
         console.log("GEOMETRY: " + geom);
         var zaehlstelle = feature.get(selectedOptions.coordID); // selectedOptions.coordID = e.g. "zaehlstelle", zaehlstelle = e.g.:"b30657"
         console.log("zaehlstelle: " + zaehlstelle);
-        var amount = dataVis.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
+        var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
         console.log("amount: " + amount);
         console.log("min_max_zaehlstelle: " + [zaehlstelle]);
         //example: min_max_zaehlstelle["b02501"][1] = maximum of b02501 of all days
@@ -286,9 +286,9 @@ function applyDate() {
     selectedOptions.dateField = dateField;
     console.log("datefield: " + dateField);
 
-    makeDateObjects(dataVis.zaehlstellen_data);
+    makeDateObjects(mapoch.zaehlstellen_data);
     init_timeslider();
-    find_dataRange(dataVis.zaehlstellen_data, dateField);
+    find_dataRange(mapoch.zaehlstellen_data, dateField);
 
     if (typeof(selectedOptions.coordID) !== "undefined") { // if coordID was selected and applied...
         console.log("coord ID selected and applied");
@@ -316,7 +316,7 @@ function handleDragOver(evt) {
 //---------- Fill Timeslider with min and max Values ---------->
 function init_timeslider() {
     console.log("init_timeslider");
-    data = dataVis.zaehlstellen_data;
+    data = mapoch.zaehlstellen_data;
     console.log("length of data: " + data.length);
     var minDatum = data[0][selectedOptions.dateField];
     var maxDatum = data[data.length - 1][selectedOptions.dateField];
@@ -334,7 +334,7 @@ function find_dataRange(data, dateField) {
     console.log("find_dataRange");
     min_max_zaehlstelle = {};
     for (k = 0; k < Object.keys(data[0]).length; k++) { // name of zaehlstelle
-        var name_zaehlstelle = Object.keys(dataVis.zaehlstellen_data[0])[k];
+        var name_zaehlstelle = Object.keys(mapoch.zaehlstellen_data[0])[k];
         if (name_zaehlstelle === dateField) {
             continue;
         }; //skip this if field is date field
@@ -366,7 +366,7 @@ function makeDateObjects(data) {
         var thisMonth = parseInt(datestring.substring(5, 7));
         var thisDay = parseInt(datestring.substring(8, 10));
         var thisDateComplete = new Date(thisYear, thisMonth - 1, thisDay); // JS-Date Month begins at 0
-        dataVis.zaehlstellen_data[i][selectedOptions.dateField] = thisDateComplete;
+        mapoch.zaehlstellen_data[i][selectedOptions.dateField] = thisDateComplete;
     }
 }
 //-------- Function for Checkboxes of Weekday-Selection (visuals) ------------>
@@ -394,7 +394,7 @@ function updateInput(thisDate, goLeft, loop) { // go left: true if going left. l
     while (foundNextWeekday == false) {
         thisDate = parseInt(thisDate);
 
-        if (thisDate > dataVis.zaehlstellen_data.length - 1) { // if maximum time is reached
+        if (thisDate > mapoch.zaehlstellen_data.length - 1) { // if maximum time is reached
             if (loop === true) {
                 thisDate = 0;
             } else {
@@ -406,7 +406,7 @@ function updateInput(thisDate, goLeft, loop) { // go left: true if going left. l
             break;
         };
 
-        var d = dataVis.zaehlstellen_data[thisDate].datum;
+        var d = mapoch.zaehlstellen_data[thisDate].datum;
         if (typeof(selectedWeekdays) != "undefined" && selectedWeekdays.indexOf(d.getDay()) >= 0) {
             var curr_day = d.getDay();
             var curr_date = d.getDate();
@@ -514,7 +514,7 @@ function createPolyChart(selectedFeatures) {
 
     // Get corresponding Data
     var time = document.getElementById("time_slider").value;
-    var currentData = dataVis.zaehlstellen_data[time]; // zaehlstellen-Data from all the Features at current time
+    var currentData = mapoch.zaehlstellen_data[time]; // zaehlstellen-Data from all the Features at current time
     var selectedData = [];
     for (i = 0; i < selectedStreetNames.length; i++) {
         selectedData.push(currentData[selectedStreetNames[i]]); // Data from selected Streets
@@ -723,7 +723,7 @@ function SelectSinglePoint() {
 
     // single point selection
     select.on('select', function(e) {
-            if (typeof(dataVis.zaehlstellen_data) !== "undefined") {
+            if (typeof(mapoch.zaehlstellen_data) !== "undefined") {
                 var features = select.getFeatures(); // Feature Array
                 var feature = features.item(0); //  first element  // why first?
                 var y = parseInt(document.getElementById("time_slider").value);
@@ -736,7 +736,7 @@ function SelectSinglePoint() {
                             console.log("current selected feature: " + feature);
                             //debugger
                             var zaehlstelle = feature.get(window.selectedOptions.coordID); // zaehlstelle = z.B. b0251
-                            var amount = dataVis.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
+                            var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
                             //example: min_max_zaehlstelle["b02501"][1] = maximum of b02501
 
                             var geometryType = feature.get('geometry').getType();
@@ -827,11 +827,11 @@ function populateSelection(columnNames, option) {
 
 
     if (option == 1) { // if Coordinates, then show/hide Coordinates, else Data selection
-        if (dataVis.selectionStatus.coords == false) { // only show/hide when not already shown, happens when re-dragging data into drop-field
+        if (mapoch.selectionStatus.coords == false) { // only show/hide when not already shown, happens when re-dragging data into drop-field
             showCoordsSelection();
         }
     } else {
-        if (dataVis.selectionStatus.date == false) {
+        if (mapoch.selectionStatus.date == false) {
             showDateSelection();
         }
     }
@@ -839,7 +839,7 @@ function populateSelection(columnNames, option) {
     switch (option) {
         case 1: // = coordinates
             {
-                if (dataVis.currentFiles.CoordsFileType === "csv") {
+                if (mapoch.currentFiles.CoordsFileType === "csv") {
                     var coordIDSelection = document.getElementById('coordIDSelect');
                     var coordXSelection = document.getElementById('xSelect');
                     var coordYSelection = document.getElementById('ySelect');
@@ -863,7 +863,7 @@ function populateSelection(columnNames, option) {
                         var opt3 = opt.cloneNode(true); // clone Options for other Selection
                         coordYSelection.appendChild(opt3);
                     }
-                } else if (dataVis.currentFiles.CoordsFileType === "JSON") {
+                } else if (mapoch.currentFiles.CoordsFileType === "JSON") {
 
                     var propertyNames = Object.getOwnPropertyNames(coords_json.features[0].properties) // array of properties of GeoJSON
                     var coordIDSelection = document.getElementById('coordIDSelect');
@@ -889,7 +889,7 @@ function populateSelection(columnNames, option) {
 
         case 2: //(= Data file)
             {
-                var propertyNames = Object.getOwnPropertyNames(dataVis.zaehlstellen_data[0]) // array of properties of GeoJSON
+                var propertyNames = Object.getOwnPropertyNames(mapoch.zaehlstellen_data[0]) // array of properties of GeoJSON
                 var dateSelection = document.getElementById('dateSelect');
 
                 // clear all existing options
@@ -921,11 +921,11 @@ function askFields(first_feature, option) {
     //		1: Coordinates
     // 		2: Data
     if (option == 1) { // if Coordinates, then show/hide Coordinates, else Data selection
-        if (dataVis.selectionStatus.coords == false) { // only show/hide when not already shown, happens when re-dragging data into drop-field
+        if (mapoch.selectionStatus.coords == false) { // only show/hide when not already shown, happens when re-dragging data into drop-field
             showCoordsSelection();
         }
     } else {
-        if (dataVis.selectionStatus.date == false) {
+        if (mapoch.selectionStatus.date == false) {
             showDateSelection();
         }
     }
