@@ -227,7 +227,8 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
         console.log("min_max_zaehlstelle: " + [zaehlstelle]);
         //example: min_max_zaehlstelle["b02501"][1] = maximum of b02501 of all days
 
-        var color_hue = 110 - Math.round((amount / min_max_zaehlstelle[zaehlstelle][1]) * 110) // 110 = green, 0 = red, between = yellow
+        var color_hue = 110 - Math.round(((amount-min_max_zaehlstelle[zaehlstelle][0]) / (min_max_zaehlstelle[zaehlstelle][1]-min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
+        console.log("color hue: " + color_hue);
         var feature_color = 'hsl(' + color_hue + ', 99%, 99%)';
         var radius_size = Math.sqrt((amount / (2 * Math.PI))) / Math.sqrt((max_thisDay / (2 * Math.PI))) * 35;
 
@@ -345,10 +346,10 @@ function find_dataRange(data, dateField) {
             var amount = data[i][name_zaehlstelle];
 
             if (amount < min_max[0]) {
-                min_max[0] = amount
+                min_max[0] = amount;
             };
             if (amount > min_max[1]) {
-                min_max[1] = amount
+                min_max[1] = amount;
             };
 
         }
@@ -741,7 +742,8 @@ function SelectSinglePoint() {
                             var geometryType = feature.get('geometry').getType();
                         //style when selected
 
-                        var color_hue = 110 - Math.round((amount / min_max_zaehlstelle[zaehlstelle][1]) * 110) // 110 = green, 0 = red, between = yellow
+                        //var color_hue = 110 - Math.round((amount / min_max_zaehlstelle[zaehlstelle][1]) * 110) // 110 = green, 0 = red, between = yellow
+                        var color_hue = 110 - Math.round(((amount-min_max_zaehlstelle[zaehlstelle][0]) / (min_max_zaehlstelle[zaehlstelle][1]-min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
                         var feature_color = 'hsl(' + color_hue + ', 99%, 99%)';
 
                         //var radius_size = (Math.round((amount/min_max_zaehlstelle[zaehlstelle][1]))+1)*10;
