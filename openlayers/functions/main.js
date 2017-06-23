@@ -116,7 +116,7 @@ function add_zaehlstellen(coords_json) {
     }
     console.log(ol.proj.get('EPSG:' + epsgField));
     var geometryType = coords_json.features[0].geometry.type;
-    ZaehlstellenPoints = new ol.layer.Vector({
+    geometryLayer = new ol.layer.Vector({
         source: new ol.source.Vector({
             features: (new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:4326'
@@ -153,7 +153,7 @@ function add_zaehlstellen(coords_json) {
             })
         })]
     };
-    map.addLayer(ZaehlstellenPoints);
+    map.addLayer(geometryLayer);
 
     var zoom = ol.animation.zoom({
         resolution: map.getView().getResolution(),
@@ -171,10 +171,10 @@ function add_zaehlstellen(coords_json) {
     map.beforeRender(pan);
     // when we set the center to the new location, the animated move will
     // trigger the bounce and pan effects
-    var extent = ZaehlstellenPoints.getSource().getExtent(); // zoom to all features
+    var extent = geometryLayer.getSource().getExtent(); // zoom to all features
     map.getView().fit(extent, map.getSize());
 
-    ZaehlstellenPoints.set('name', idField[idField.length - 1]); // name layer after last item in idField-array
+    geometryLayer.set('name', idField[idField.length - 1]); // name layer after last item in idField-array
     if (dataVis.zaehlstellen_data > 0) {
         console.log("updating style, because data is already applied");
         updateStyle(0);
@@ -214,7 +214,7 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
     var small_value = Math.round(max_thisDay * 0.07854); // Circle with 1/7 diameter (10px)
     document.getElementById("size_image_min").innerHTML = small_value;
 
-    ZaehlstellenPoints.setStyle(function(feature, resolution) {
+    geometryLayer.setStyle(function(feature, resolution) {
         var geom = feature.getGeometry().getType(); // geom = point
         if (geom === 'Polygon') {
             geom = 'MultiPolygon'
@@ -286,7 +286,7 @@ function applyDate() {
     console.log("datefield: " + dateField);
 
     makeDateObjects(dataVis.zaehlstellen_data);
-    init_timeslider(dataVis.zaehlstellen_data);
+    init_timeslider();
     find_dataRange(dataVis.zaehlstellen_data, dateField);
 
     if (typeof(selectedOptions.coordID) !== "undefined") { // if coordID was selected and applied...
@@ -313,11 +313,13 @@ function handleDragOver(evt) {
     evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
 //---------- Fill Timeslider with min and max Values ---------->
-function init_timeslider(data) {
+function init_timeslider() {
     console.log("init_timeslider");
+    data = dataVis.zaehlstellen_data;
+    console.log("length of data: " + data.length);
     var minDatum = data[0][selectedOptions.dateField];
     var maxDatum = data[data.length - 1][selectedOptions.dateField];
-    document.getElementById("time_slider").setAttribute("max", data.length - 1);
+    document.getElementById("time_slider").setAttribute("max", data.length -1);
 }
 //---------- Button one step left/right ---------->
 function changeDateOneStep(step, loop) { // takes -1 or 1 from left/right-Buttons and updates the current Date, loop is true when auto-play is on, so it starts at 0 when end of data is reached
@@ -339,7 +341,7 @@ function find_dataRange(data, dateField) {
         console.log("name der zaehlstelle: " + name_zaehlstelle);
         var min_max = [Infinity, -Infinity];
 
-        for (i = 1; i < data.length; i++) { // also via keys? // value of zaehlstelle at certain date
+        for (i = 0; i < data.length; i++) { // also via keys? // value of zaehlstelle at certain date
             var amount = data[i][name_zaehlstelle];
 
             if (amount < min_max[0]) {
@@ -359,7 +361,6 @@ function makeDateObjects(data) {
     for (i = 0; i < data.length; i++) {
         var datestring = data[i][selectedOptions.dateField];
         console.log(datestring);
-        debugger
         var thisYear = parseInt(datestring.substring(0, 4));
         var thisMonth = parseInt(datestring.substring(5, 7));
         var thisDay = parseInt(datestring.substring(8, 10));
@@ -392,7 +393,7 @@ function updateInput(thisDate, goLeft, loop) { // go left: true if going left. l
     while (foundNextWeekday == false) {
         thisDate = parseInt(thisDate);
 
-        if (thisDate >= dataVis.zaehlstellen_data.length - 1) { // if maximum time is reached
+        if (thisDate > dataVis.zaehlstellen_data.length - 1) { // if maximum time is reached
             if (loop === true) {
                 thisDate = 0;
             } else {
@@ -490,10 +491,10 @@ function SelectByPolygon() {
         selectedFeatures = []; // Array for Point Features  // global because used when timeslider changes, not safe?
         oldSelectedStreetNames = [] // Array for street names, if same amount of points are selected, but different streetnames -> redraw chart completely
 
-        for (i = 0; i < ZaehlstellenPoints.getSource().getFeatures().length; i++) { // for every Point (zaehlstelle)...
-            var pointExtent = ZaehlstellenPoints.getSource().getFeatures()[i].getGeometry().getExtent();
+        for (i = 0; i < geometryLayer.getSource().getFeatures().length; i++) { // for every Point (zaehlstelle)...
+            var pointExtent = geometryLayer.getSource().getFeatures()[i].getGeometry().getExtent();
             if (polygonGeometry.intersectsExtent(pointExtent) == true) { //returns true when Polygon intersects with Extent of Point (= Point itself)
-                selectedFeatures.push(ZaehlstellenPoints.getSource().getFeatures()[i]);
+                selectedFeatures.push(geometryLayer.getSource().getFeatures()[i]);
             }
         }
         createPolyChart(selectedFeatures);
