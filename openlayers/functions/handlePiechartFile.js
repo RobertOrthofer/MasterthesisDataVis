@@ -43,6 +43,7 @@ function handlePiechartFile(evt) {
         } else if (f.name.substr(f.name.length - 4) === "json") {
             mapoch.currentFiles.CoordsFileType = "JSON";
             mapoch.PieChartData = JSON.parse(reader.result);
+            makeDateObjectsPieChart();
             addPieCharts();
         } else {
             alert("Unrecognized Filetype. Please Check your input (only .csv or .json allowed)");
@@ -62,6 +63,20 @@ function handlePiechartFile(evt) {
     reader.readAsText(f, "UTF-8");
 
     document.getElementById('list_piechart').innerHTML = '<ul style="margin: 0px;">' + output.join('') + '</ul>';
+    addPieCharts();
+}
+
+// helper function to convert dates in piechartdata into real javascript date objects
+function makeDateObjectsPieChart() {
+    for (i = 0; i < mapoch.PieChartData.length; i++) {
+        var datestring = mapoch.PieChartData[i][selectedOptions.dateField];
+        console.log(datestring);
+        var thisYear = parseInt(datestring.substring(0, 4));
+        var thisMonth = parseInt(datestring.substring(5, 7));
+        var thisDay = parseInt(datestring.substring(8, 10));
+        var thisDateComplete = new Date(thisYear, thisMonth - 1, thisDay); // JS-Date Month begins at 0
+        mapoch.PieChartData[i][selectedOptions.dateField] = thisDateComplete;
+    }
 }
 
 
@@ -73,15 +88,105 @@ function addPieCharts(){
     // of the polygon. Because MultiPolygon are possible (tyrol), scan for the largest polygon of each multipolygon,
     // and place the pie chart there
 
-    // get the time slider value as integer, only works when same date
-    var x = document.getElementById("time_slider").value;
-    var thisDate = parseInt(x) + parseInt(step); // thisDate = integer of Timestep (e.g. 0 = first Date in Data)
+
 
     console.log(mapoch.PieChartData);
-    for (i = 0; i < geometryLayer.getSource().getFeatures().length; i++) { // for every Point (zaehlstelle)...
-        var pointExtent = geometryLayer.getSource().getFeatures()[i].getGeometry().getExtent();
-        if (polygonGeometry.intersectsExtent(pointExtent) == true) { //returns true when Polygon intersects with Extent of Point (= Point itself)
-            selectedFeatures.push(geometryLayer.getSource().getFeatures()[i]);
+
+    // get the time slider value as integer
+    var thisDateInteger = document.getElementById("time_slider").value;
+    // look up date in zaehlstellen_data corresponding to timeslider-value
+    // to compare 2 dates, date.getTime() is required
+    var thisDate = mapoch.zaehlstellen_data[thisDateInteger][selectedOptions.dateField].getTime();
+    var correctEpochElement = {};
+    mapoch.PieChartData.some(function(element){
+        if(element[selectedOptions.dateField].getTime() == thisDate){
+            console.log("found element with correct date");
+            correctEpochElement = element;
         }
+        else{
+            console.log("not correct element");
+        }
+    })
+    console.log(correctEpochElement);
+
+    // for each key in the current element, which is not the date, make a pie chart
+    for (var key in mapoch.zaehlstellen_data[thisDateInteger]) {
+        if (key == selectedOptions.dateField){
+            continue
+        }
+        else{
+            console.log(correctEpochElement[key]);
+
+            // if not done already, map the attributes to colors, so even if the order is changed,
+            // the colors will always be the same for the same attribut, in every Pie chart
+            if(Object.keys(mapoch.PieChartColorMap).length === 0 && mapoch.PieChartColorMap.constructor === Object){
+                mapColors(correctEpochElement[key]);
+            }
+
+            createPieChart(correctEpochElement[key]);
+        }
+    };
+}
+
+//create a single pie chart from data Object
+//returns pie chart as canvas element
+function createPieChart(dataObject){
+    var canvas = document.createElement('canvas');
+
+    //https://stackoverflow.com/questions/2588181/canvas-is-stretched-when-using-css-but-normal-with-width-height-properties
+    // these are the canvas height and width attributes (default 150/300) NOT the css attributes. setting the css attribute dynamically before drawing the circle will create distortion
+    canvas.setAttribute('width','100');
+    canvas.setAttribute('height','100');
+    var ctx = canvas.getContext("2d");
+    var lastend = - Math.PI / 2; //quarter circle in radians so piechart starts north
+
+    // calculate total sum of values
+    var myTotal = 0;
+    for (var key in dataObject) {
+        myTotal += dataObject[key];
+    };
+
+    var centerX = canvas.width / 2;
+    var centerY = canvas.height / 2;
+
+    // get the key sorted by their values for the current object
+    var sortedValuesKeys = sortValues(dataObject);
+
+    for (var i = 0; i < sortedValuesKeys.length; i++) {
+        console.log("i= " + i);
+        ctx.fillStyle = mapoch.PieChartColorMap[sortedValuesKeys[i]]; // look up the color for the current key
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        console.log("last end: " + lastend);
+        // Arc Parameters: x, y, radius, startingAngle (radians), endingAngle (radians), antiClockwise (boolean)
+        ctx.arc(centerX, centerY, centerY, lastend, lastend + (Math.PI * 2 * (dataObject[sortedValuesKeys[i]] / myTotal)), false);
+        ctx.lineTo(centerX, centerY);
+        ctx.fill();
+        lastend += Math.PI * 2 * (dataObject[sortedValuesKeys[i]] / myTotal);
+    };
+    document.body.append(canvas);
+    return(canvas);
+}
+
+
+// Sort the data descending, so that the biggest slice of the Piechart is starting north,
+// second highest is second, etc.
+// insert unsorted objects
+// returns sorted array of keys, sorted by value (highest value come first)
+function sortValues(list){
+    //var list = {"attr1": 111, "attr2": 64, "attr3": 51, "attr4": 77, "attr5": 10};
+    // compare here:
+    //https://www.w3schools.com/jsref/jsref_sort.asp
+    keysSorted = Object.keys(list).sort(function(a,b){return list[b]-list[a]})
+    return(keysSorted);     // bar,me,you,fooS
+}
+
+// helper function to map the attributes to colors
+function mapColors(PieChartDataElement){
+    console.log(PieChartDataElement);
+    var PieChartColors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple']; // Colors of each slice of the Pie Chart
+    var i = 0;
+    for (var key in PieChartDataElement) {
+        mapoch.PieChartColorMap[key] = PieChartColors[i++];
     }
 }

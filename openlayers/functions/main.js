@@ -11,6 +11,7 @@ var mapoch = {
     currentFiles: {},// save filenames of dropped data
     zaehlstellen_data: [],
     PieChartData: {},
+    PieChartColorMap: {}, // object with colors for each attribute of the pie chart
     selectionStatus: { // save state of JSON drop-down menu, so they dont have to be checked via DOM-queries
         coords: false,
         date: false
@@ -286,7 +287,7 @@ function applyDate() {
     selectedOptions.dateField = dateField;
     console.log("datefield: " + dateField);
 
-    makeDateObjects(mapoch.zaehlstellen_data);
+    makeDateObjects();
     init_timeslider();
     find_dataRange(mapoch.zaehlstellen_data, dateField);
 
@@ -357,10 +358,9 @@ function find_dataRange(data, dateField) {
     }
 }
 //--------- Parse Date-Strings into JS Date Objects -------------------->
-function makeDateObjects(data) {
-    console.log("makeDateObjects");
-    for (i = 0; i < data.length; i++) {
-        var datestring = data[i][selectedOptions.dateField];
+function makeDateObjects() {
+    for (i = 0; i < mapoch.zaehlstellen_data.length; i++) {
+        var datestring = mapoch.zaehlstellen_data[i][selectedOptions.dateField];
         console.log(datestring);
         var thisYear = parseInt(datestring.substring(0, 4));
         var thisMonth = parseInt(datestring.substring(5, 7));
