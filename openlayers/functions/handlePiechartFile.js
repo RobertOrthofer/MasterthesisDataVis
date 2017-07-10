@@ -110,6 +110,7 @@ function addPieCharts(){
     console.log(correctEpochElement);
 
     // for each key in the current element, which is not the date, make a pie chart
+    // (keys are names to match by, e.g. county names)
     for (var key in mapoch.zaehlstellen_data[thisDateInteger]) {
         if (key == selectedOptions.dateField){
             continue
@@ -123,14 +124,17 @@ function addPieCharts(){
                 mapColors(correctEpochElement[key]);
             }
 
-            createPieChart(correctEpochElement[key]);
+            //createPieChart(correctEpochElement[key]);
+            mapoch.PieChartCanvasElements[key] = createPieChart(correctEpochElement[key]);
         }
     };
+    addChartsToMap(); // look for center of geometries and place pie charts there
 }
 
 //create a single pie chart from data Object
 //returns pie chart as canvas element
 function createPieChart(dataObject){
+    console.log("creating pie chart element for: " + "asdasd");
     var canvas = document.createElement('canvas');
 
     //https://stackoverflow.com/questions/2588181/canvas-is-stretched-when-using-css-but-normal-with-width-height-properties
@@ -164,8 +168,48 @@ function createPieChart(dataObject){
         ctx.fill();
         lastend += Math.PI * 2 * (dataObject[sortedValuesKeys[i]] / myTotal);
     };
-    document.body.append(canvas);
+    //document.body.append(canvas);
     return(canvas);
+}
+
+// function to add all pie charts to the correspinding features in the map
+function addChartsToMap(){
+    // iterate of all keys of mapoch.PieChartCanvasElements (==matchID)
+    var mapFeatures = map.getLayers().getArray()[2].getSource().getFeatures();
+    console.log(mapFeatures);
+    //map.getLayers().getArray()[2].getSource().getFeatures()[0].get("name");
+
+    Object.keys(mapoch.PieChartCanvasElements).forEach(function(key){  // for each key (=matchID),,,
+        var length = mapFeatures.length;
+        for(i=0; i<mapFeatures.length; i++){  // look for the corresponding geometry...
+            if(mapFeatures[i].get("name") === key){
+                console.log ("i: "+ i + "  " + mapFeatures[i].get("name") + "===" + key);
+                var matchedFeature = mapFeatures[i];
+                var centerPoint;
+                if(matchedFeature.getGeometry().getType() === "Polygon"){
+                    centerPoint = matchedFeature.getGeometry().getInteriorPoint();
+                }
+                else if (matchedFeature.getGeometry().getType() === "MultiPolygon") {
+                    var allPolygons = matchedFeature.getGeometry().getPolygons();
+                    var largestPolygon;
+                    var largestPolygonArea = 0;
+                    allPolygons.forEach(function(thisPolygon){
+                        var thisArea = thisPolygon.getArea();
+                        if (thisArea > largestPolygonArea){
+                            largestPolygon = thisPolygon;
+                            largestPolygonArea = thisArea;
+                        };
+                        centerPoint = largestPolygon.getInteriorPoint();
+                    })
+                }
+                else{
+                    console.log("geometryType " + matchedFeature.getGeometry().getType() + "not yet supported");
+                }
+                console.log(centerPoint);
+            }
+        }
+    })
+
 }
 
 
@@ -178,7 +222,7 @@ function sortValues(list){
     // compare here:
     //https://www.w3schools.com/jsref/jsref_sort.asp
     keysSorted = Object.keys(list).sort(function(a,b){return list[b]-list[a]})
-    return(keysSorted);     // bar,me,you,fooS
+    return(keysSorted);
 }
 
 // helper function to map the attributes to colors

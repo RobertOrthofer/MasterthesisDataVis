@@ -12,9 +12,11 @@ var mapoch = {
     zaehlstellen_data: [],
     PieChartData: {},
     PieChartColorMap: {}, // object with colors for each attribute of the pie chart
+    PieChartCanvasElements: {}, // object with canvas elements, keys are names to join by (e.g. names of countries)
     selectionStatus: { // save state of JSON drop-down menu, so they dont have to be checked via DOM-queries
         coords: false,
-        date: false
+        date: false,
+        pieCharts: false
     }
 }
 
