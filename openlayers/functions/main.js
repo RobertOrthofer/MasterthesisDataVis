@@ -430,6 +430,8 @@ function updateInput(thisDate, goLeft, loop) { // go left: true if going left. l
 
             console.log("upadting style after updating timeslider");
             updateStyle(thisDate);
+            addPieCharts();
+
             foundNextWeekday = true;
             document.getElementById("time_slider").value = thisDate; // Update of Timeslider
             if (typeof selectedFeatures !== "undefined" && selectedFeatures.length > 0) {
@@ -1004,6 +1006,31 @@ function askFields(first_feature, option) {
             break;
     } // end of switch
 }
+
+//===============================================================================================================
+// function to get layer by name
+var getLayerByName = function(layerName){
+    var correctLayer;
+    map.getLayers().getArray().some(function(layer){
+        if(layer.get('name') === layerName){
+            console.log("found layer")
+            console.log(layer);
+            correctLayer = layer;
+        };
+    })
+    return correctLayer;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 //===============================================================================================================
 // Create a popup overlay which will be used to display feature info

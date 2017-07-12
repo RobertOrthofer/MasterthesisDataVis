@@ -91,6 +91,17 @@ function addPieCharts(){
 
 
     console.log(mapoch.PieChartData);
+    //if there is no PieChartData, step out
+    if(Object.keys(mapoch.PieChartData).length === 0 && mapoch.PieChartData.constructor === Object){
+        console.log("no pe chart data available");
+        return;
+    }
+
+    //if there are already pie charts on the map, delete the piechart layer
+    if(getLayerByName('chartLayer')){
+        console.log("delete chartLayer");
+
+    }
 
     // get the time slider value as integer
     var thisDateInteger = document.getElementById("time_slider").value;
@@ -139,8 +150,8 @@ function createPieChart(dataObject){
 
     //https://stackoverflow.com/questions/2588181/canvas-is-stretched-when-using-css-but-normal-with-width-height-properties
     // these are the canvas height and width attributes (default 150/300) NOT the css attributes. setting the css attribute dynamically before drawing the circle will create distortion
-    canvas.setAttribute('width','100');
-    canvas.setAttribute('height','100');
+    canvas.setAttribute('width','115');
+    canvas.setAttribute('height','115');
     var ctx = canvas.getContext("2d");
     var lastend = - Math.PI / 2; //quarter circle in radians so piechart starts north
 
@@ -150,14 +161,28 @@ function createPieChart(dataObject){
         myTotal += dataObject[key];
     };
 
-    var centerX = canvas.width / 2;
-    var centerY = canvas.height / 2;
+    // hardcoded center, canvas is larger because of shadow
+    var centerX = 50;
+    var centerY = 50;
+
+    //draw a dropshadow so the charts are "floating" above the map
+    ctx.save(); // save style of context, so that drop shadow is not applied on every single element
+    ctx.shadowColor = "#555555";
+    ctx.shadowBlur = 20;
+    ctx.shadowOffsetX = 5;
+    ctx.shadowOffsetY = 5;
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, centerY,0,2*Math.PI);
+    ctx.closePath();
+    ctx.fill();
+    // restore the saved canvas state
+    ctx.restore();
 
     // get the key sorted by their values for the current object
     var sortedValuesKeys = sortValues(dataObject);
 
     for (var i = 0; i < sortedValuesKeys.length; i++) {
-        console.log("i= " + i);
         ctx.fillStyle = mapoch.PieChartColorMap[sortedValuesKeys[i]]; // look up the color for the current key
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
@@ -166,9 +191,22 @@ function createPieChart(dataObject){
         ctx.arc(centerX, centerY, centerY, lastend, lastend + (Math.PI * 2 * (dataObject[sortedValuesKeys[i]] / myTotal)), false);
         ctx.lineTo(centerX, centerY);
         ctx.fill();
+        //make a thin line between every segment (performance?)
+        ctx.moveTo(centerX, centerY);
+        ctx.lineWidth="1";
+        ctx.strokeStyle="#555555";
+        ctx.lineTo(centerX + 50 * Math.cos(lastend), centerY + 50 * Math.sin(lastend));
+        ctx.stroke();
+        //update last end
         lastend += Math.PI * 2 * (dataObject[sortedValuesKeys[i]] / myTotal);
     };
-    //document.body.append(canvas);
+    //when done, create a 360′ arc as a border
+    ctx.beginPath();
+    ctx.lineWidth="2";
+    ctx.strokeStyle="#555555";
+    ctx.arc(centerX, centerY, centerY-1,0,2*Math.PI);
+    ctx.stroke();
+
     return(canvas);
 }
 
@@ -220,7 +258,7 @@ function addChartsToMap(){
                         anchorXUnits: 'pixels',
                         anchorYUnits: 'pixels',
                         img: mapoch.PieChartCanvasElements[key],
-                        imgSize: [100, 100]
+                        imgSize: [115, 115]
                     }))
                 });
                 iconFeature.setStyle(iconStyle);
