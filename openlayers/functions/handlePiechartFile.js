@@ -177,7 +177,8 @@ function addChartsToMap(){
     // iterate of all keys of mapoch.PieChartCanvasElements (==matchID)
     var mapFeatures = map.getLayers().getArray()[2].getSource().getFeatures();
     console.log(mapFeatures);
-    //map.getLayers().getArray()[2].getSource().getFeatures()[0].get("name");
+    //create empty array to store all ol.features
+    var mapFeatureArray = [];
 
     Object.keys(mapoch.PieChartCanvasElements).forEach(function(key){  // for each key (=matchID),,,
         var length = mapFeatures.length;
@@ -189,7 +190,7 @@ function addChartsToMap(){
                 if(matchedFeature.getGeometry().getType() === "Polygon"){
                     centerPoint = matchedFeature.getGeometry().getInteriorPoint();
                 }
-                else if (matchedFeature.getGeometry().getType() === "MultiPolygon") {
+                else if (matchedFeature.getGeometry().getType() === "MultiPolygon") { // if MultiPolygon, get interor point of largest polygon
                     var allPolygons = matchedFeature.getGeometry().getPolygons();
                     var largestPolygon;
                     var largestPolygonArea = 0;
@@ -206,9 +207,40 @@ function addChartsToMap(){
                     console.log("geometryType " + matchedFeature.getGeometry().getType() + "not yet supported");
                 }
                 console.log(centerPoint);
+                // TO DO: HTMLCanvasElement for ol.style.Icon
+                //create a ol.feature as Point
+                var iconFeature = new ol.Feature({
+                    geometry: centerPoint,
+                    name: 'pieChart'+key
+                });
+                //create canvas element as style
+                var iconStyle = new ol.style.Style({
+                    image: new ol.style.Icon(({
+                        anchor: [50, 50],
+                        anchorXUnits: 'pixels',
+                        anchorYUnits: 'pixels',
+                        img: mapoch.PieChartCanvasElements[key],
+                        imgSize: [100, 100]
+                    }))
+                });
+                iconFeature.setStyle(iconStyle);
+                mapFeatureArray.push(iconFeature);
             }
         }
     })
+    // if successful, create new vector layer and show the pie charts on the map
+    if(mapFeatureArray.length > 0){
+        var vectorSource = new ol.source.Vector({
+            features: mapFeatureArray
+        });
+
+        var vectorLayer = new ol.layer.Vector({
+            source: vectorSource,
+            name: "chartLayer"
+        });
+
+        map.addLayer(vectorLayer);
+    }
 
 }
 
