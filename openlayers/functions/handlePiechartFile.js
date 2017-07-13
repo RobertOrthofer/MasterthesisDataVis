@@ -100,7 +100,8 @@ function addPieCharts(){
     //if there are already pie charts on the map, delete the piechart layer
     if(getLayerByName('chartLayer')){
         console.log("delete chartLayer");
-
+        var chartLayer = getLayerByName('chartLayer');
+        map.removeLayer(chartLayer);
     }
 
     // get the time slider value as integer
@@ -194,7 +195,7 @@ function createPieChart(dataObject){
         //make a thin line between every segment (performance?)
         ctx.moveTo(centerX, centerY);
         ctx.lineWidth="1";
-        ctx.strokeStyle="#555555";
+        ctx.strokeStyle="#3c3c3c";
         ctx.lineTo(centerX + 50 * Math.cos(lastend), centerY + 50 * Math.sin(lastend));
         ctx.stroke();
         //update last end
@@ -203,7 +204,7 @@ function createPieChart(dataObject){
     //when done, create a 360′ arc as a border
     ctx.beginPath();
     ctx.lineWidth="2";
-    ctx.strokeStyle="#555555";
+    ctx.strokeStyle="#3c3c3c";
     ctx.arc(centerX, centerY, centerY-1,0,2*Math.PI);
     ctx.stroke();
 
@@ -298,9 +299,91 @@ function sortValues(list){
 // helper function to map the attributes to colors
 function mapColors(PieChartDataElement){
     console.log(PieChartDataElement);
-    var PieChartColors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple']; // Colors of each slice of the Pie Chart
+    //colors taken from this artikle:
+    //http://www.mulinblog.com/a-color-palette-optimized-for-data-visualization/
+    //original source: Stephen Few’s book, Show Me the Numbers
+    //http://castor.tugraz.at/F/7YY47NQH8A3D2HS8PTK3TV54XXB8VSJ879XKKUQHKYTD2VKUAF-63076?func=item-global&doc_library=TUG01&doc_number=000508124&year=&volume=&sub_library=
+    // gray is lighter to enable black labels
+    var PieChartColors = ['#676767', '#5DA5DA', '#FAA43A', '#60BD68', '#F17CB0', '#B2912F','#B276B2','#DECF3F','#F15854']; // Colors of each slice of the Pie Chart
     var i = 0;
     for (var key in PieChartDataElement) {
         mapoch.PieChartColorMap[key] = PieChartColors[i++];
     }
+    //now that the colors are fixed, create the legend
+    createPieChartLegend();
+}
+
+//create a single labeled pie chart as the legend
+function createPieChartLegend(){
+    //
+	var lastend = -Math.PI/2;
+	//var pieColor = ["#ECD078","#D95B43","#C02942","#542437","#53777A"];
+	//var pieData = [10,30,20,60,40];
+    var labels = Object.keys(mapoch.PieChartColorMap);
+    // calculate equaly sized slizes
+    var sliceSize = (2*Math.PI) / labels.length;
+
+	var canvas = document.createElement('canvas');
+    canvas.setAttribute('width','180');
+    canvas.setAttribute('height','180');
+	var ctx = canvas.getContext("2d");
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	var centerX = ctx.canvas.width/2;
+	var centerY = ctx.canvas.height/2;
+    var pieChartRadius = 48;
+	var labelRadius = pieChartRadius/0.9; //radius for label placement
+
+    // create border first, so that the shadow of the labels work properly
+    ctx.beginPath();
+    ctx.lineWidth="2";
+    ctx.strokeStyle="#3c3c3c";
+    ctx.arc(centerX, centerY, pieChartRadius+1,0,2*Math.PI);
+    ctx.stroke();
+
+	labels.forEach(function(currentLabel){
+        console.log("current Label: " + currentLabel);
+		ctx.fillStyle = mapoch.PieChartColorMap[currentLabel];
+        console.log("fill style: " + ctx.fillStyle);
+		ctx.beginPath();
+		ctx.moveTo(centerX,centerY);
+		ctx.arc(centerX,centerY,pieChartRadius,lastend,lastend+sliceSize,false);
+
+		ctx.lineTo(centerX,centerY);
+		ctx.fill();
+
+        // line between segments
+        //make a thin line between every segment (performance?)
+        ctx.moveTo(centerX, centerY);
+        ctx.lineWidth="1";
+        ctx.strokeStyle="#3c3c3c";
+        ctx.lineTo(centerX + pieChartRadius * Math.cos(lastend), centerY + pieChartRadius * Math.sin(lastend));
+        ctx.stroke();
+
+		//Labels on pie slices (fully transparent circle within outer pie circle, to get middle of pie slice)
+        ctx.save();
+        var endAngle = lastend + sliceSize;
+		var setX = centerX + Math.cos(endAngle-sliceSize/2) * labelRadius;
+		var setY = centerY + Math.sin(endAngle-sliceSize/2) * labelRadius;
+		ctx.fillStyle = "#000000";
+        //ctx.shadowColor = "white";
+        //ctx.shadowOffsetX = 0;
+        //ctx.shadowOffsetY = 0;
+        //ctx.shadowBlur = 8;
+		ctx.font = 'bold 16px Verdana';
+        ctx.textAlign="center";
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#ffffff";
+        ctx.globalAlpha = 0.3; // make outline of text a little transparent
+        ctx.strokeText(currentLabel, setX, setY); // make outline before filled text, because the stroke is on inside and outside.
+        //inside stroke will be covered by text
+        ctx.globalAlpha = 1; // make text non-transparent
+        ctx.fillText(currentLabel,setX,setY);
+        ctx.restore();
+
+		lastend += sliceSize;
+    });
+
+    document.getElementById("size_legend").append(canvas);
 }
