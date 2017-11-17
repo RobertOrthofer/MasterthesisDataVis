@@ -343,6 +343,7 @@ button::-moz-focus-inner {
 
 	#myChart{
 		height: 100%;
+		min-height: 200px;
 	}
 
 	#snapshot_div{
