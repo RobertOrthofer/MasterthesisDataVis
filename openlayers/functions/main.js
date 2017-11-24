@@ -875,6 +875,15 @@ function populateSelection(columnNames, option) {
                         coordYSelection.appendChild(opt3);
                     }
                 } else if (mapoch.currentFiles.CoordsFileType === "JSON") {
+                    if(!coords_json.hasOwnProperty("features")){
+                        console.log(coords_json);
+                        alert("Please check if the dropped file is a correct GeoJSON");
+                        return;
+                    }
+                    if(coords_json.features.length == 0){
+                        alert("Please check if the dropped file has geographic features");
+                        return;
+                    }
 
                     var propertyNames = Object.getOwnPropertyNames(coords_json.features[0].properties) // array of properties of GeoJSON
                     var coordIDSelection = document.getElementById('coordIDSelect');

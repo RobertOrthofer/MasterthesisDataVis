@@ -106,10 +106,10 @@ function addPieCharts(){
 
 
 
-    console.log(mapoch.PieChartData);
+    //console.log(mapoch.PieChartData);
     //if there is no PieChartData, step out
     if(Object.keys(mapoch.PieChartData).length === 0 && mapoch.PieChartData.constructor === Object){
-        console.log("no pe chart data available");
+        //console.log("no pie chart data available");
         return;
     }
 
@@ -162,7 +162,7 @@ function addPieCharts(){
 //create a single pie chart from data Object
 //returns pie chart as canvas element
 function createPieChart(dataObject){
-    console.log("creating pie chart element for: " + "asdasd");
+    console.log("creating pie chart element");
     var canvas = document.createElement('canvas');
 
     //https://stackoverflow.com/questions/2588181/canvas-is-stretched-when-using-css-but-normal-with-width-height-properties
