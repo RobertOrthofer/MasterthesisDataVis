@@ -81,7 +81,7 @@ function initMap() {
 
 //---- Zählstellenpunkte für Karte --------------------------------------------------------------------------->
 function add_zaehlstellen(coords_json) {
-    console.log("Apply Coordinates Button pressed")
+    //console.log("Apply Coordinates Button pressed")
 
     //remove current coordinates, if existing
 
@@ -105,7 +105,7 @@ function add_zaehlstellen(coords_json) {
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) { // when transformation is complete, insert the new coordinates
                 var responseString = xhttp.response; // looks like:   "proj4.defs("EPSG:3256","+proj=lcc +lat_1=-72.66666666666667 +lat_2=-75.33333333333333 +lat_0=-90 +lon_0=117 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");"
-                console.log(responseString);
+                //console.log(responseString);
                 if (responseString === "") {
                     alert("The chosen coordinate system is unknown. Please check your input.");
                 } else {
@@ -117,7 +117,7 @@ function add_zaehlstellen(coords_json) {
         xhttp.open("GET", xhrString, false); // not asynch, need coordinates before points are displayed on map
         xhttp.send();
     }
-    console.log(ol.proj.get('EPSG:' + epsgField));
+    //console.log(ol.proj.get('EPSG:' + epsgField));
     var geometryType = coords_json.features[0].geometry.type;
     geometryLayer = new ol.layer.Vector({
         source: new ol.source.Vector({
@@ -208,7 +208,7 @@ function getMaxThisDay(y) { // y = integer of current day (according to timeslid
 function updateStyle(y) { // y = integer of current day (according to timeslider)
     //console.log(window.radiustest);
     //window.radiustest = 0;
-    console.log("current time (timeslider-value): " + y);
+    //console.log("current time (timeslider-value): " + y);
     var max_thisDay = getMaxThisDay(y);
     // write values into size-legend
     document.getElementById("size_image_max").innerHTML = max_thisDay; // biggest circle (d=70px) = maximum value
@@ -222,16 +222,16 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
         if (geom === 'Polygon') {
             geom = 'MultiPolygon'
         } //for easier styling, make polygons to multipolygons
-        console.log("GEOMETRY: " + geom);
+        //console.log("GEOMETRY: " + geom);
         var zaehlstelle = feature.get(selectedOptions.coordID); // selectedOptions.coordID = e.g. "zaehlstelle", zaehlstelle = e.g.:"b30657"
-        console.log("zaehlstelle: " + zaehlstelle);
+        //console.log("zaehlstelle: " + zaehlstelle);
         var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
-        console.log("amount: " + amount);
-        console.log("min_max_zaehlstelle: " + [zaehlstelle]);
+        //console.log("amount: " + amount);
+        //console.log("min_max_zaehlstelle: " + [zaehlstelle]);
         //example: min_max_zaehlstelle["b02501"][1] = maximum of b02501 of all days
 
         var color_hue = 110 - Math.round(((amount-min_max_zaehlstelle[zaehlstelle][0]) / (min_max_zaehlstelle[zaehlstelle][1]-min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
-        console.log("color hue: " + color_hue);
+        //console.log("color hue: " + color_hue);
         var feature_color = 'hsl(' + color_hue + ', 99%, 99%)';
         var radius_size = Math.sqrt((amount / (2 * Math.PI))) / Math.sqrt((max_thisDay / (2 * Math.PI))) * 35;
 
@@ -284,10 +284,10 @@ function init_dropzone() {
 }
 
 function applyDate() {
-    console.log("Apply-Date Button pressed");
+    //console.log("Apply-Date Button pressed");
     var dateField = document.getElementById("dateSelect").value.split(",");
     selectedOptions.dateField = dateField;
-    console.log("datefield: " + dateField);
+    //console.log("datefield: " + dateField);
 
     makeDateObjects();
     init_timeslider();
@@ -341,8 +341,8 @@ function find_dataRange(data, dateField) {
         if (name_zaehlstelle === dateField) {
             continue;
         }; //skip this if field is date field
-        console.log("k: " + k);
-        console.log("name der zaehlstelle: " + name_zaehlstelle);
+        //console.log("k: " + k);
+        //console.log("name der zaehlstelle: " + name_zaehlstelle);
         var min_max = [Infinity, -Infinity];
 
         for (i = 0; i < data.length; i++) { // also via keys? // value of zaehlstelle at certain date
@@ -428,7 +428,7 @@ function updateInput(thisDate, goLeft, loop) { // go left: true if going left. l
 
             document.getElementById('currentDate').innerHTML = shownDate;
 
-            console.log("upadting style after updating timeslider");
+            //console.log("upadting style after updating timeslider");
             updateStyle(thisDate);
             addPieCharts();
 
@@ -502,6 +502,7 @@ function SelectByPolygon() {
                 selectedFeatures.push(geometryLayer.getSource().getFeatures()[i]);
             }
         }
+        console.log("selected features for bar chart: " + selectedFeatures);
         createPolyChart(selectedFeatures);
     });
     map.addInteraction(draw);
@@ -510,6 +511,7 @@ function SelectByPolygon() {
 //------------------------ Create Charts ---------------------------->
 function createPolyChart(selectedFeatures) {
     // Get Sreet Names
+    console.log("create bar chart");
     var selectedStreetNames = [];
     for (i = 0; i < selectedFeatures.length; i++) {
         selectedStreetNames.push(selectedFeatures[i].getProperties()[selectedOptions.coordID]); // get all streetnames (= zaehlstellen) from selection
@@ -523,6 +525,7 @@ function createPolyChart(selectedFeatures) {
     for (i = 0; i < selectedStreetNames.length; i++) {
         selectedData.push(currentData[selectedStreetNames[i]]); // Data from selected Streets
     };
+    console.log("selected Data: " + selectedData);
 
     // get maximum of selected features at all times (to set maximum of scale)
     var dataMax = 0;
@@ -532,19 +535,20 @@ function createPolyChart(selectedFeatures) {
         }; // if maximum value of selected zaehlstelle is bigger than current maximum value, replace it
     }
     dataMax = Math.ceil(dataMax / 1000) * 1000; // round up to next 1000
-
+    console.log("maximum of selected Data: " + dataMax);
 
 
     // Make Multi-Feature Chart
     // Destroy existing Chart if number of selected Elements differs
-    var chartDestroyed = false;
+    var destroyChart = false;
 
     // JS Magic for comparing scalar arrays
     //var SameStreetNames = selectedStreetNames.length!==oldSelectedStreetNames.length && selectedStreetNames.every(function(v,i) { return v === oldSelectedStreetNames[i]});
     var SameStreetNames = selectedStreetNames.equals(oldSelectedStreetNames);
     if (myChart.id !== "myChart" && (selectedFeatures.length !== myChart.data.datasets[0].data.length || !SameStreetNames)) {
         myChart.destroy();
-        chartDestroyed = true;
+        destroyChart = true;
+        console.log("destroy Chart, because the selected object names changed");
     }
     // overwrite the old selected Street Names, so if e.g. 1 point is selected both times, but its a different point, the chart is getting destroyed and remade
     oldSelectedStreetNames = selectedStreetNames.slice() // global, not referenced
@@ -555,14 +559,15 @@ function createPolyChart(selectedFeatures) {
     };
 
     // if Chart already exists, update it with new values and labels (e.g. only time changed)
-    if (myChart.id !== "myChart" && chartDestroyed == false && selectedFeatures.length !== 0) {
-        //alert ("update");
+    if (myChart.id !== "myChart" && destroyChart == false && selectedFeatures.length !== 0) {
+        console.log("chart already exists, redraw with new values");
         myChart.labels = selectedStreetNames;
         myChart.data.datasets[0].data = selectedData;
         myChart.update();
         myChart.render();
         myChart.resize();
     } else if (selectedFeatures.length !== 0) { // If Chart didnt exist before...
+        console.log("bar chart doesnt exist yet, draw new chart");
         var ctx = document.getElementById("myChart");
         myChart = new Chart(ctx, { // global, unsauber?
             type: 'bar',
@@ -598,8 +603,10 @@ function createPolyChart(selectedFeatures) {
     // make div visible if something is in it
     if (selectedFeatures.length > 0 || (typeof(snapshotArray) != "undefined" && snapshotArray.length > 0)) {
         //	document.getElementById("canvas_div").style.visibility = 'visible';
+        console.log("make bar chart div visible");
         document.getElementById("canvas_div").style.display = "block";
     } else {
+        console.log("make bar chart div invisible");
         document.getElementById("canvas_div").style.display = "none";
     }
 };
@@ -737,7 +744,7 @@ function SelectSinglePoint() {
 
                 if (selected.length) {
                     selected.forEach(function(feature) {
-                            console.log("current selected feature: " + feature);
+                            //console.log("current selected feature: " + feature);
                             //debugger
                             var zaehlstelle = feature.get(window.selectedOptions.coordID); // zaehlstelle = z.B. b0251
                             var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
@@ -1013,8 +1020,8 @@ var getLayerByName = function(layerName){
     var correctLayer;
     map.getLayers().getArray().some(function(layer){
         if(layer.get('name') === layerName){
-            console.log("found layer")
-            console.log(layer);
+            //console.log("found layer")
+            //console.log(layer);
             correctLayer = layer;
         };
     })
