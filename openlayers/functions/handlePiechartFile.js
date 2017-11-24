@@ -12,6 +12,22 @@ function handlePiechartFile(evt) {
 
     var files = evt.dataTransfer.files; // FileList object.
 
+    console.log(files);
+    console.log("type number of files: " + files.length );
+    if((files.length > 1) || (files.length == 0)){ //check if too many files are dropped or if dropped object is no file at all (for instance text)
+        alert("Please drop only a single file");
+        return;
+    }
+    if (files[0]) {
+        console.log("type of file: " + files[0].type);
+        var allowedFileTypes = ["application/json"]; // allowed File types
+        var isAllowedFileType = (allowedFileTypes.indexOf(files[0].type) > -1); //check if dropped file Type is in array of allowed file types
+        if (!isAllowedFileType){
+            alert("Please make sure you drop files of the allowed type\n(your type: " + files[0].type + "). \n\n At the moment only JSON is allowed for Pie Charts");
+            return;
+        }
+    }
+
     //check if current Object is empty (no file dropped yet)
     if (Object.keys(mapoch.PieChartData).length !== 0) {
         var r = confirm("Override existing File?"); // ask User

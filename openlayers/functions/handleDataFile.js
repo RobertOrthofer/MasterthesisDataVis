@@ -55,7 +55,6 @@ function handleDataFile(evt) {
 
     var files = evt.dataTransfer.files; // FileList object.
 
-    var files = evt.dataTransfer.files; // FileList object.
     console.log(files);
     console.log("type number of files: " + files.length );
     if((files.length > 1) || (files.length == 0)){ //check if too many files are dropped or if dropped object is no file at all (for instance text)
