@@ -5,18 +5,18 @@
 	<title> Zaehlstellen </title>
 
 	<meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://openlayers.org/en/v3.17.1/build/ol-debug.js"> </script>
-  <link rel="stylesheet" href="https://openlayers.org/en/v3.17.1/css/ol.css" type="text/css"></link>
-  <link rel="stylesheet" type="text/css" href="zaehlstellen.css" />
-  <script type="text/javascript" src="Chart/Chart.js"></script>   <!--via npm -->
-  <script src="functions/main.js"></script>
-  <script src="functions/handleDomEvents.js"></script>
-  <script src="functions/handleDataFile.js"></script>
-  <script src="functions/handleCoordsFile.js"></script>
-  <script src="functions/handlePiechartFile.js"></script>
-  <script src="proj4js/proj4.js"></script>
+    <script src="https://openlayers.org/en/v3.17.1/build/ol-debug.js"> </script>
+    <link rel="stylesheet" href="https://openlayers.org/en/v3.17.1/css/ol.css" type="text/css"></link>
+    <link rel="stylesheet" type="text/css" href="zaehlstellen.css" />
+    <script type="text/javascript" src="Chart/Chart.js"></script>   <!--via npm -->
+    <script src="functions/main.js"></script>
+    <script src="functions/handleDomEvents.js"></script>
+    <script src="functions/handleDataFile.js"></script>
+    <script src="functions/handleCoordsFile.js"></script>
+    <script src="functions/handlePiechartFile.js"></script>
+    <script src="proj4js/proj4.js"></script>
 
  </head>
 
@@ -34,8 +34,8 @@
         <!--<div id="hideDropZone" onclick="hideDropZone()">  △ &nbsp;&nbsp;&nbsp;&nbsp; Hide Drop Zones  &nbsp;&nbsp;&nbsp;&nbsp; △  </div>-->
 		<div id="drop_zone_holder">
             <div id="top_drop_zones">
-			    <div id="drop_zone_data_file" class="drop_zone">Drop Coordinate JSON</div>
-			    <div id="drop_zone_coords_file" class="drop_zone">Drop Data JSON</div>
+			    <div id="drop_zone_data_file" class="drop_zone">Drop Coordinates File<br>(JSON or csv)</div>
+			    <div id="drop_zone_coords_file" class="drop_zone">Drop Data File<br>(JSON or csv)</div>
             </div>
             <div id="bottom_drop_zones">
                 <div id="optional_drop_zone">(Optional) Overlay Diagram Data JSON</div>
@@ -145,8 +145,8 @@
       						<img id="color_legend_image" src="images/colormap_vert.svg" alt="color_map">
       					</div>
                 <div id="color_image_text">
-                  <span id="color_minimum">Minimum</span>
-        					<span id="color_maximum">Maximum</span>
+                    <span id="color_minimum">Minimum</span>
+        		    <span id="color_maximum">Maximum</span>
                 </div>
               </div>
     				</div>
