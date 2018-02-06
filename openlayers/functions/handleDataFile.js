@@ -101,6 +101,7 @@ function handleDataFile(evt) {
     reader.onload = function(event) { // Reader ist asynchron, wenn reader mit operation fertig ist, soll das hier (JSON.parse) ausgeführt werden, sonst ist es noch null
         if (f.name.substr(f.name.length - 3) === "csv") { // check if filetiype is csv
             mapoch.zaehlstellen_data = csvToJSON(reader.result);
+            console.log(mapoch.zaehlstellen_data);
         } else {
             mapoch.zaehlstellen_data = JSON.parse(reader.result); // global, better method?
             console.log(mapoch.zaehlstellen_data);
@@ -113,9 +114,13 @@ function handleDataFile(evt) {
 
         askFields(mapoch.zaehlstellen_data[0], 2); // only first feature is needed for property names
 
-        document.getElementById("renderDataButton").addEventListener('click', function() {
+        // hack to remove event listeners by cloning and replacing, if a second data file gets uploaded
+        var element = document.getElementById('renderDataButton');
+        var elClone = element.cloneNode(true);
+        elClone.addEventListener('click', function() { // adding the event listener to the clone
             applyDate();
         }, false);
+        element.parentNode.replaceChild(elClone, element);
     };
     reader.readAsText(f);
 

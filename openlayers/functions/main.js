@@ -285,10 +285,10 @@ function init_dropzone() {
 }
 
 function applyDate() {
-    //console.log("Apply-Date Button pressed");
+    var currentDate = new Date();
+    console.log('applyDate button pressed at ', currentDate.getSeconds())
     var dateField = document.getElementById("dateSelect").value.split(",");
     selectedOptions.dateField = dateField;
-    //console.log("datefield: " + dateField);
 
     makeDateObjects();
     init_timeslider();
@@ -297,15 +297,13 @@ function applyDate() {
     if (typeof(selectedOptions.coordID) !== "undefined") { // if coordID was selected and applied...
         console.log("coord ID selected and applied");
         map.getLayers().forEach(function(layer) {
-            //if(typeof(layer.get('name')) !== "undefined"){
-            if (layer.get('name') == selectedOptions.coordID[selectedOptions.coordID.length - 1]) { // layer is named after last item of coordID-array
+            if (layer.get('name') === 'geometryLayer') { // layer is named after last item of coordID-array
                 updateStyle(0);
                 if (typeof(selectedOptions.coordID) !== "undefined") {
                     updateInput(0, false, false);
                 };
                 document.getElementById("sliderDiv").style.display = 'inline-block';
             }
-            //};
         });
     }
 }
@@ -365,6 +363,7 @@ function makeDateObjects() {
     for (i = 0; i < mapoch.zaehlstellen_data.length; i++) {
         var datestring = mapoch.zaehlstellen_data[i][selectedOptions.dateField];
         console.log(datestring);
+        console.log("i: ", i);
         var thisYear = parseInt(datestring.substring(0, 4));
         var thisMonth = parseInt(datestring.substring(5, 7));
         var thisDay = parseInt(datestring.substring(8, 10));
@@ -735,60 +734,60 @@ function SelectSinglePoint() {
 
     // single point selection
     select.on('select', function(e) {
-            if (typeof(mapoch.zaehlstellen_data) !== "undefined") {
-                var features = select.getFeatures(); // Feature Array
-                var feature = features.item(0); //  first element  // why first?
-                var y = parseInt(document.getElementById("time_slider").value);
+        if (typeof(mapoch.zaehlstellen_data) !== "undefined") {
+            var features = select.getFeatures(); // Feature Array
+            var feature = features.item(0); //  first element  // why first?
+            var y = parseInt(document.getElementById("time_slider").value);
 
-                var selected = e.selected;
-                var deselected = e.deselected;
+            var selected = e.selected;
+            var deselected = e.deselected;
 
-                if (selected.length) {
-                    selected.forEach(function(feature) {
-                            //console.log("current selected feature: " + feature);
-                            //debugger
-                            var zaehlstelle = feature.get(window.selectedOptions.coordID); // zaehlstelle = z.B. b0251
-                            var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
-                            //example: min_max_zaehlstelle["b02501"][1] = maximum of b02501
+            if (selected.length) {
+                selected.forEach(function(feature) {
+                    //console.log("current selected feature: " + feature);
+                    //debugger
+                    var zaehlstelle = feature.get(window.selectedOptions.coordID); // zaehlstelle = z.B. b0251
+                    var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
+                    //example: min_max_zaehlstelle["b02501"][1] = maximum of b02501
 
-                            var geometryType = feature.get('geometry').getType();
-                        //style when selected
+                    var geometryType = feature.get('geometry').getType();
+                    //style when selected
 
-                        //var color_hue = 110 - Math.round((amount / min_max_zaehlstelle[zaehlstelle][1]) * 110) // 110 = green, 0 = red, between = yellow
-                        var color_hue = 110 - Math.round(((amount-min_max_zaehlstelle[zaehlstelle][0]) / (min_max_zaehlstelle[zaehlstelle][1]-min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
-                        var feature_color = 'hsl(' + color_hue + ', 99%, 99%)';
+                    //var color_hue = 110 - Math.round((amount / min_max_zaehlstelle[zaehlstelle][1]) * 110) // 110 = green, 0 = red, between = yellow
+                    var color_hue = 110 - Math.round(((amount-min_max_zaehlstelle[zaehlstelle][0]) / (min_max_zaehlstelle[zaehlstelle][1]-min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
+                    var feature_color = 'hsl(' + color_hue + ', 99%, 99%)';
 
-                        //var radius_size = (Math.round((amount/min_max_zaehlstelle[zaehlstelle][1]))+1)*10;
-                        var max_thisDay = getMaxThisDay(y);
-                        var radius_size = Math.sqrt((amount / (2 * Math.PI))) / Math.sqrt((max_thisDay / (2 * Math.PI))) * 35;
-                        //debugger
-                        var selectStyle;
-                        if (geometryType === "Point") {
-                            selectStyle = new ol.style.Style({
-                                image: new ol.style.Circle({
-                                    radius: radius_size,
-                                    fill: new ol.style.Fill({
-                                        color: 'hsl(' + color_hue + ', 100%, 50%)'
-                                    }),
-                                    stroke: new ol.style.Stroke({
-                                        color: [170, 170, 170, 0.5],
-                                        width: 3
-                                    })
-                                })
-                            });
-                        } else {
-                            selectStyle = new ol.style.Style({
+                    //var radius_size = (Math.round((amount/min_max_zaehlstelle[zaehlstelle][1]))+1)*10;
+                    var max_thisDay = getMaxThisDay(y);
+                    var radius_size = Math.sqrt((amount / (2 * Math.PI))) / Math.sqrt((max_thisDay / (2 * Math.PI))) * 35;
+                    //debugger
+                    var selectStyle;
+                    if (geometryType === "Point") {
+                        selectStyle = new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: radius_size,
+                                fill: new ol.style.Fill({
+                                    color: 'hsl(' + color_hue + ', 100%, 50%)'
+                                }),
                                 stroke: new ol.style.Stroke({
                                     color: [170, 170, 170, 0.5],
                                     width: 3
-                                }),
-                                fill: new ol.style.Fill({
-                                    color: 'hsl(' + color_hue + ', 100%, 50%)'
                                 })
-                            });
-                        }
-                        feature.setStyle(selectStyle);
-                    });
+                            })
+                        });
+                    } else {
+                        selectStyle = new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: [170, 170, 170, 0.5],
+                                width: 3
+                            }),
+                            fill: new ol.style.Fill({
+                                color: 'hsl(' + color_hue + ', 100%, 50%)'
+                            })
+                        });
+                    }
+                    feature.setStyle(selectStyle);
+                });
             }
             if (deselected.length) {
                 deselected.forEach(function(feature) {
