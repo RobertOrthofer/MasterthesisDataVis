@@ -3,7 +3,7 @@
 // helper function to convert .csv to geoJSON
 function csvToGeoJSON() { //csv = reader.result
     var lines = csv.split(/[\r\n]+/); // split for windows and mac csv (newline or carriage return)
-    delete window.csv; // reader.result from drag&drop not needed anymore
+    //delete window.csv; // reader.result from drag&drop not needed anymore
     var headers = lines[0].split(","); //not needed?
     var matchID = document.getElementById("coordIDSelect").value;
     var xColumn = document.getElementById("xSelect").value;
@@ -38,6 +38,15 @@ function csvToGeoJSON() { //csv = reader.result
     return complete_geojson; //return geoJSON
 }
 
+function removeGeometryLayer() {
+    map.getLayers().getArray().forEach(function(layer) {
+        if (layer.get("name") === 'geometryLayer') {
+            console.log('removing layer: ', layer);
+            map.removeLayer(layer);
+        }
+    })
+}
+
 
 
 //---------- Handle File Selection (Coordinates-JSON)------------------------------------------------------>
@@ -53,10 +62,19 @@ function handleCoordsFile(evt) {
         alert("Please drop only a single file");
         return;
     }
-    if (files[0]) {
-        console.log("type of file: " + files[0].type);
+    var file = files[0];
+    var isCSV = false;
+    var isJSON = false;
+    if (file) {
+        console.log("type of file: " + file.type);
+        if (file.type === "application/json" || file.name.substr(file.name.length - 4) === "json") {
+            isJSON = true;
+        }
+        if (file.type === "text/csv" || file.name.substr(file.name.length - 3) === "csv") {
+            isCSV = true;
+        }
         var allowedFileTypes = ["application/json","text/csv"]; // allowed File types
-        var isAllowedFileType = (allowedFileTypes.indexOf(files[0].type) > -1); //check if dropped file Type is in array of allowed file types
+        var isAllowedFileType = (allowedFileTypes.indexOf(file.type) > -1); //check if dropped file Type is in array of allowed file types
         if (!isAllowedFileType){
             alert("Please make sure you drop files of the allowed type\n(your type: " + files[0].type + "). \n\n Allowed file types are JSON and CSV");
             return;
@@ -67,9 +85,10 @@ function handleCoordsFile(evt) {
         var r = confirm("Override existing File?"); // ask User
         if (r == true) {
             console.log("Override File");
+            removeGeometryLayer();
             // now clear all old options from Coords- and Match-ID-Selection
-            var select = document.getElementById("xSelect");
-            var select2 = document.getElementById("coordIDSelect");
+            var select = document.getElementById("coordIDSelect");
+            var select2 = document.getElementById("xSelect");
             var select3 = document.getElementById("ySelect");
             var length = select.options.length; // the 2 selects should have same options
             for (i = 0; i < length; i++) {
@@ -84,23 +103,23 @@ function handleCoordsFile(evt) {
     }
     // files is a FileList of File objects. List some properties.
     var output = [];
-    var f = files[0];
+    //var f = files[0];
 
-    output.push('<li><strong>', escape(f.name), '</strong>  - ',
-        f.size, ' bytes, last modified: ',
-        f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
-    mapoch.currentFiles.Coords = f.name;
+    output.push('<li><strong>', escape(file.name), '</strong>  - ',
+        file.size, ' bytes, last modified: ',
+        file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
+    mapoch.currentFiles.Coords = file.name;
 
     coords_json = {};
     var reader = new FileReader(); // to read the FileList object
     reader.onload = function(event) { // Reader ist asynchron, wenn reader mit operation fertig ist, soll das hier (JSON.parse) ausgeführt werden, sonst ist es noch null
         var columnNames = [];
-        if (f.name.substr(f.name.length - 3) === "csv") { // check if filetiype is csv
+        if (isCSV) { // check if filetiype is csv
             mapoch.currentFiles.CoordsFileType = "csv";
             columnNames = getColumnNames(reader.result);
             window.csv = reader.result; // temporary save reader.result into global variable, until geoJSON can be created with user-inputs
             populateSelection(columnNames, 1);
-        } else if (f.name.substr(f.name.length - 4) === "json") {
+        } else if (isJSON) {
             mapoch.currentFiles.CoordsFileType = "JSON";
             coords_json = JSON.parse(reader.result);
             populateSelection(columnNames, 1);
@@ -117,7 +136,7 @@ function handleCoordsFile(evt) {
             add_zaehlstellen(coords_json);  // conversion from csv to json in add_zaehlstellen
         }, false);
     };
-    reader.readAsText(f, "UTF-8");
+    reader.readAsText(file, "UTF-8");
 
     document.getElementById('list_coords').innerHTML = '<ul style="margin: 0px;">' + output.join('') + '</ul>';
 }

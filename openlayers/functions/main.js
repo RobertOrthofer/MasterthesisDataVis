@@ -84,6 +84,7 @@ function add_zaehlstellen(coords_json) {
     //console.log("Apply Coordinates Button pressed")
 
     //remove current coordinates, if existing
+    removeGeometryLayer();
 
     // save the current Selection to global variable selectedOptions, so they can only be changed with the apply button
     var idField = document.getElementById("coordIDSelect").value; // array, because it might be nested
@@ -177,7 +178,7 @@ function add_zaehlstellen(coords_json) {
     var extent = geometryLayer.getSource().getExtent(); // zoom to all features
     map.getView().fit(extent, map.getSize());
 
-    geometryLayer.set('name', idField[idField.length - 1]); // name layer after last item in idField-array
+    geometryLayer.set('name', 'geometryLayer'); // name layer after last item in idField-array
     if (mapoch.zaehlstellen_data > 0) {
         console.log("updating style, because data is already applied");
         updateStyle(0);
