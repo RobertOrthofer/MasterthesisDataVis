@@ -73,9 +73,8 @@ function handleCoordsFile(evt) {
         if (file.type === "text/csv" || file.name.substr(file.name.length - 3) === "csv") {
             isCSV = true;
         }
-        var allowedFileTypes = ["application/json","text/csv"]; // allowed File types
-        var isAllowedFileType = (allowedFileTypes.indexOf(file.type) > -1); //check if dropped file Type is in array of allowed file types
-        if (!isAllowedFileType){
+
+        if (!isCSV && !isJSON) {
             alert("Please make sure you drop files of the allowed type\n(your type: " + files[0].type + "). \n\n Allowed file types are JSON and CSV");
             return;
         }
