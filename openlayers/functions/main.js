@@ -120,6 +120,7 @@ function add_zaehlstellen(coords_json) {
     }
     //console.log(ol.proj.get('EPSG:' + epsgField));
     var geometryType = coords_json.features[0].geometry.type;
+    mapoch.currentFiles.geometryType = geometryType;
     geometryLayer = new ol.layer.Vector({
         source: new ol.source.Vector({
             features: (new ol.format.GeoJSON({
@@ -223,21 +224,19 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
         if (geom === 'Polygon') {
             geom = 'MultiPolygon'
         } //for easier styling, make polygons to multipolygons
-        //console.log("GEOMETRY: " + geom);
+        if (geom === 'MultiPolygon') {
+            document.getElementById('size_legend').style.display = 'none';
+        } else {
+            document.getElementById('size_legend').style.display = 'block';
+        }
+
         var zaehlstelle = feature.get(selectedOptions.coordID); // selectedOptions.coordID = e.g. "zaehlstelle", zaehlstelle = e.g.:"b30657"
-        //console.log("zaehlstelle: " + zaehlstelle);
         var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
-        //console.log("amount: " + amount);
-        //console.log("min_max_zaehlstelle: " + [zaehlstelle]);
         //example: min_max_zaehlstelle["b02501"][1] = maximum of b02501 of all days
 
         var color_hue = 110 - Math.round(((amount-min_max_zaehlstelle[zaehlstelle][0]) / (min_max_zaehlstelle[zaehlstelle][1]-min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
-        //console.log("color hue: " + color_hue);
         var feature_color = 'hsl(' + color_hue + ', 99%, 99%)';
         var radius_size = Math.sqrt((amount / (2 * Math.PI))) / Math.sqrt((max_thisDay / (2 * Math.PI))) * 35;
-
-        //if (radius_size > window.radiustest) {window.radiustest = radius_size}; // maximum TEST
-
 
 
         var styles = {
