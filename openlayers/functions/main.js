@@ -224,11 +224,6 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
         if (geom === 'Polygon') {
             geom = 'MultiPolygon'
         } //for easier styling, make polygons to multipolygons
-        if (geom === 'MultiPolygon') {
-            document.getElementById('size_legend').style.display = 'none';
-        } else {
-            document.getElementById('size_legend').style.display = 'block';
-        }
 
         var zaehlstelle = feature.get(selectedOptions.coordID); // selectedOptions.coordID = e.g. "zaehlstelle", zaehlstelle = e.g.:"b30657"
         var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
@@ -304,6 +299,12 @@ function applyDate() {
                 document.getElementById("sliderDiv").style.display = 'inline-block';
             }
         });
+    }
+    // if only polygons an no pie charts are available, hide legend
+    if (mapoch.currentFiles.geometryType === 'Polygon' && typeof mapoch.currentFiles.PieChart === "undefined") {
+        document.getElementById('size_legend').style.display = 'none';
+    } else {
+        document.getElementById('size_legend').style.display = 'block';
     }
 }
 
