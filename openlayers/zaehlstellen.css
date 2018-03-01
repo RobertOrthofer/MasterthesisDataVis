@@ -619,6 +619,7 @@ button::-moz-focus-inner {
 	#size_legend_content,
 	#color_legend_content{
 		position: relative;
+		vertical-align: top;
 	}
 
 	#size_image_max{

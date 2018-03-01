@@ -304,7 +304,7 @@ function applyDate() {
     if (mapoch.currentFiles.geometryType === 'Polygon' && typeof mapoch.currentFiles.PieChart === "undefined") {
         document.getElementById('size_legend').style.display = 'none';
     } else {
-        document.getElementById('size_legend').style.display = 'block';
+        document.getElementById('size_legend').style.display = 'table-cell';
     }
 }
 
