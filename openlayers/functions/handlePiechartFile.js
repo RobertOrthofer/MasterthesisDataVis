@@ -389,5 +389,8 @@ function createPieChartLegend(){
 		lastend += sliceSize;
     });
 
-    document.getElementById("size_legend").append(canvas);
+    var legendContainer = document.getElementById("size_legend");
+    legendContainer.innerHTML = "";
+    legendContainer.append(canvas);
+    legendContainer.style.display = "block"; // was "none" because polygon has no circle-size-legend
 }
