@@ -61,11 +61,21 @@ function handleDataFile(evt) {
         alert("Please drop only a single file");
         return;
     }
-    if (files[0]) {
-        console.log("type of file: " + files[0].type);
-        var allowedFileTypes = ["application/json","text/csv"]; // allowed File types
-        var isAllowedFileType = (allowedFileTypes.indexOf(files[0].type) > -1); //check if dropped file Type is in array of allowed file types
-        if (!isAllowedFileType){
+
+    var file = files[0];
+    var isCSV = false;
+    var isJSON = false;
+
+    if (file) {
+        console.log("type of file: " + file.type);
+        if (file.type === "application/json" || file.name.substr(file.name.length - 4) === "json") {
+            isJSON = true;
+        }
+        if (file.type === "text/csv" || file.name.substr(file.name.length - 3) === "csv") {
+            isCSV = true;
+        }
+
+        if (!isCSV && !isJSON) {
             alert("Please make sure you drop files of the allowed type\n(your type: " + files[0].type + "). \n\n Allowed file types are JSON and CSV");
             return;
         }
@@ -90,16 +100,14 @@ function handleDataFile(evt) {
 
     // files is a FileList of File objects. List some properties.
     var output = [];
-    var f = files[0];
-    output.push('<li><strong>', escape(f.name), '</strong>  - ',
-        f.size, ' bytes, last modified: ',
-        f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
-
-    mapoch.currentFiles.Data = f.name;
+    output.push('<li><strong>', escape(file.name), '</strong>  - ',
+        file.size, ' bytes, last modified: ',
+        file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
+    mapoch.currentFiles.Data = file.name;
 
     var reader = new FileReader(); // to read the FileList object
     reader.onload = function(event) { // Reader ist asynchron, wenn reader mit operation fertig ist, soll das hier (JSON.parse) ausgeführt werden, sonst ist es noch null
-        if (f.name.substr(f.name.length - 3) === "csv") { // check if filetiype is csv
+        if (file.name.substr(file.name.length - 3) === "csv") { // check if filetiype is csv
             mapoch.zaehlstellen_data = csvToJSON(reader.result);
             console.log(mapoch.zaehlstellen_data);
         } else {
@@ -114,7 +122,7 @@ function handleDataFile(evt) {
 
         askFields(mapoch.zaehlstellen_data[0], 2); // only first feature is needed for property names
 
-        // hack to remove event listeners by cloning and replacing, if a second data file gets uploaded
+        // trick to remove event listeners by cloning and replacing, if a second data file gets uploaded
         var element = document.getElementById('renderDataButton');
         var elClone = element.cloneNode(true);
         elClone.addEventListener('click', function() { // adding the event listener to the clone
@@ -122,7 +130,7 @@ function handleDataFile(evt) {
         }, false);
         element.parentNode.replaceChild(elClone, element);
     };
-    reader.readAsText(f);
+    reader.readAsText(file);
 
     // global variable for selection
     selectedWeekdays = [0, 1, 2, 3, 4, 5, 6]; // select all weekdays before timeslider gets initialized
