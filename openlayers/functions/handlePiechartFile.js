@@ -18,12 +18,12 @@ function handlePiechartFile(evt) {
         alert("Please drop only a single file");
         return;
     }
-    if (files[0]) {
-        console.log("type of file: " + files[0].type);
-        var allowedFileTypes = ["application/json"]; // allowed File types
-        var isAllowedFileType = (allowedFileTypes.indexOf(files[0].type) > -1); //check if dropped file Type is in array of allowed file types
-        if (!isAllowedFileType){
-            alert("Please make sure you drop files of the allowed type\n(your type: " + files[0].type + "). \n\n At the moment only JSON is allowed for Pie Charts");
+    var file = files[0];
+
+    if (file) {
+        console.log("type of file: " + file.type);
+        if (file.type !== "application/json" && file.name.substr(file.name.length - 4) !== "json") {
+            alert("Please make sure you drop files of the allowed type\n(your type: " + files[0].type + "). \n\n Allowed file types are JSON and CSV");
             return;
         }
     }
@@ -41,22 +41,21 @@ function handlePiechartFile(evt) {
     }
     // files is a FileList of File objects. List some properties.
     var output = [];
-    var f = files[0];
 
-    output.push('<li><strong>', escape(f.name), '</strong>  - ',
-        f.size, ' bytes, last modified: ',
-        f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
-    mapoch.currentFiles.PieChart = f.name;
+    output.push('<li><strong>', escape(file.name), '</strong>  - ',
+        file.size, ' bytes, last modified: ',
+        file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() : 'n/a', '</li>');
+    mapoch.currentFiles.PieChart = file.name;
 
     var reader = new FileReader(); // to read the FileList object
     reader.onload = function(event) { // Reader ist asynchron, wenn reader mit operation fertig ist, soll das hier (JSON.parse) ausgeführt werden, sonst ist es noch null
         var columnNames = [];
-        if (f.name.substr(f.name.length - 3) === "csv") { // check if filetiype is csv
+        if (file.name.substr(file.name.length - 3) === "csv") { // check if filetiype is csv
             mapoch.currentFiles.CoordsFileType = "csv";
             columnNames = getColumnNames(reader.result);
             console.log("Pie Chart Data doesn't support CSV yet");
             window.csv = reader.result; // temporary save reader.result into global variable, until geoJSON can be created with user-inputs
-        } else if (f.name.substr(f.name.length - 4) === "json") {
+        } else if (file.name.substr(file.name.length - 4) === "json") {
             mapoch.currentFiles.CoordsFileType = "JSON";
             mapoch.PieChartData = JSON.parse(reader.result);
             makeDateObjectsPieChart();
@@ -64,19 +63,8 @@ function handlePiechartFile(evt) {
         } else {
             alert("Unrecognized Filetype. Please Check your input (only .csv or .json allowed)");
         }
-
-        /*document.getElementById("hideCoordSelection").style.visibility = "visible";
-        document.getElementById("choseFieldDiv1").style.visibility = "visible";
-        document.getElementById("renderCoordinatesButton").style.visibility = "visible";
-        document.getElementById("hideSelectionHolder").style.visibility = "visible";*/
-
-        /*document.getElementById("renderCoordinatesButton").addEventListener('click', function() {
-            add_zaehlstellen(coords_json);
-        }, false);*/
-        //console.log('added Event Listener to apply button');
-        //add_zaehlstellen(coords_json);
     };
-    reader.readAsText(f, "UTF-8");
+    reader.readAsText(file, "UTF-8");
 
     document.getElementById('list_piechart').innerHTML = '<ul style="margin: 0px;">' + output.join('') + '</ul>';
     addPieCharts();
