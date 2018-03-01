@@ -101,7 +101,7 @@ function add_zaehlstellen(coords_json) {
     // If EPSG is not empty or 4326, the data has to be reprojected. get the .wkt from epsg.io api
     var responseString = "";
     if (epsgField !== "4326" && epsgField !== "") {
-        var xhrString = "http://epsg.io/" + epsgField + ".js";
+        var xhrString = "https://epsg.io/" + epsgField + ".js";
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) { // when transformation is complete, insert the new coordinates
