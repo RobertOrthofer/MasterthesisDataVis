@@ -210,6 +210,8 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
     //window.radiustest = 0;
     //console.log("current time (timeslider-value): " + y);
     var max_thisDay = getMaxThisDay(y);
+    var maxAreaLargestCircle;
+    var scaleFactor;
     // write values into size-legend
     if (mapoch.currentFiles.geometryType !== 'Polygon') { //removed innerHTML when adding pieCharts
         document.getElementById("size_image_max").innerHTML = max_thisDay; // biggest circle (d=70px) = maximum value
@@ -217,7 +219,11 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
         document.getElementById("size_image_mid").innerHTML = middle_value;
         var small_value = Math.round(max_thisDay * 0.07854); // Circle with 1/7 diameter (10px)
         document.getElementById("size_image_min").innerHTML = small_value;
+
+        maxAreaLargestCircle = Math.pow(35,2) * Math.PI;
+        scaleFactor = maxAreaLargestCircle / max_thisDay;
     }
+
 
     geometryLayer.setStyle(function(feature, resolution) {
         var geom = feature.getGeometry().getType(); // geom = point
@@ -231,9 +237,11 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
 
         var color_hue = 110 - Math.round(((amount-mapoch.min_max_zaehlstelle[zaehlstelle][0]) / (mapoch.min_max_zaehlstelle[zaehlstelle][1]-mapoch.min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
         var feature_color = 'hsl(' + color_hue + ', 99%, 99%)';
-        var radius_size = Math.sqrt((amount / (2 * Math.PI))) / Math.sqrt((max_thisDay / (2 * Math.PI))) * 35;
 
-
+        var scaledAmount = amount * scaleFactor;
+        var radius_size = Math.sqrt(scaledAmount / (Math.PI));
+        console.log("Radius: ", radius_size);
+    
         var styles = {
             'Point': [new ol.style.Style({
                 image: new ol.style.Circle({
