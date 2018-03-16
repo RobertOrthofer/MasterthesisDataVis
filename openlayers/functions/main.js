@@ -1,15 +1,14 @@
 var map;
 var viewpoint;
-var selectedOptions = {}; //global variable for selecting matching id, coordinate-field, epsg,...
-// selectedOptions are arrays with property names (might be nested)
-//(e.g.: ["properties", "zaehlstelle"])
 
 
 
 //global data variables
 var mapoch = {
     currentFiles: {},// save filenames of dropped data
+    selectedOptions: {},//global variable for selecting matching id, coordinate-field, epsg,...
     zaehlstellen_data: [],
+    min_max_zaehlstelle: {}, //object of array of min and max values of each feature
     PieChartData: {},
     PieChartColorMap: {}, // object with colors for each attribute of the pie chart
     PieChartCanvasElements: {}, // object with canvas elements, keys are names to join by (e.g. names of countries)
@@ -86,12 +85,11 @@ function add_zaehlstellen(coords_json) {
     //remove current coordinates, if existing
     removeGeometryLayer();
 
-    // save the current Selection to global variable selectedOptions, so they can only be changed with the apply button
+    // save the current Selection to global variable mapoch.selectedOptions, so they can only be changed with the apply button
     var idField = document.getElementById("coordIDSelect").value; // array, because it might be nested
     var epsgField = document.getElementById("epsgInput").value;
-    selectedOptions.coordID = idField;
-    //selectedOptions.coordField = coordsField;
-    selectedOptions.epsg = epsgField;
+    mapoch.selectedOptions.coordID = idField;
+    mapoch.selectedOptions.epsg = epsgField;
 
     // if coordinates are csv, make an aproppriate JSON with selected x and y coordinates and Match-ID as property
     if (mapoch.currentFiles.CoordsFileType === "csv") {
@@ -183,7 +181,7 @@ function add_zaehlstellen(coords_json) {
     if (mapoch.zaehlstellen_data > 0) {
         console.log("updating style, because data is already applied");
         updateStyle(0);
-        if (typeof(selectedOptions.dateField) !== "undefined") {
+        if (typeof(mapoch.selectedOptions.dateField) !== "undefined") {
             updateInput(0, false, false);
         };
         document.getElementById("sliderDiv").style.display = 'inline-block';
@@ -227,11 +225,11 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
             geom = 'MultiPolygon'
         } //for easier styling, make polygons to multipolygons
 
-        var zaehlstelle = feature.get(selectedOptions.coordID); // selectedOptions.coordID = e.g. "zaehlstelle", zaehlstelle = e.g.:"b30657"
+        var zaehlstelle = feature.get(mapoch.selectedOptions.coordID); // mapoch.selectedOptions.coordID = e.g. "zaehlstelle", zaehlstelle = e.g.:"b30657"
         var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
         //example: min_max_zaehlstelle["b02501"][1] = maximum of b02501 of all days
 
-        var color_hue = 110 - Math.round(((amount-min_max_zaehlstelle[zaehlstelle][0]) / (min_max_zaehlstelle[zaehlstelle][1]-min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
+        var color_hue = 110 - Math.round(((amount-mapoch.min_max_zaehlstelle[zaehlstelle][0]) / (mapoch.min_max_zaehlstelle[zaehlstelle][1]-mapoch.min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
         var feature_color = 'hsl(' + color_hue + ', 99%, 99%)';
         var radius_size = Math.sqrt((amount / (2 * Math.PI))) / Math.sqrt((max_thisDay / (2 * Math.PI))) * 35;
 
@@ -284,18 +282,18 @@ function applyDate() {
     var currentDate = new Date();
     console.log('applyDate button pressed at ', currentDate.getSeconds())
     var dateField = document.getElementById("dateSelect").value.split(",");
-    selectedOptions.dateField = dateField;
+    mapoch.selectedOptions.dateField = dateField;
 
     makeDateObjects();
     init_timeslider();
     find_dataRange(mapoch.zaehlstellen_data, dateField);
 
-    if (typeof(selectedOptions.coordID) !== "undefined") { // if coordID was selected and applied...
+    if (typeof(mapoch.selectedOptions.coordID) !== "undefined") { // if coordID was selected and applied...
         console.log("coord ID selected and applied");
         map.getLayers().forEach(function(layer) {
             if (layer.get('name') === 'geometryLayer') { // layer is named after last item of coordID-array
                 updateStyle(0);
-                if (typeof(selectedOptions.coordID) !== "undefined") {
+                if (typeof(mapoch.selectedOptions.coordID) !== "undefined") {
                     updateInput(0, false, false);
                 };
                 document.getElementById("sliderDiv").style.display = 'inline-block';
@@ -322,8 +320,8 @@ function init_timeslider() {
     console.log("init_timeslider");
     data = mapoch.zaehlstellen_data;
     console.log("length of data: " + data.length);
-    var minDatum = data[0][selectedOptions.dateField];
-    var maxDatum = data[data.length - 1][selectedOptions.dateField];
+    var minDatum = data[0][mapoch.selectedOptions.dateField];
+    var maxDatum = data[data.length - 1][mapoch.selectedOptions.dateField];
     document.getElementById("time_slider").setAttribute("max", data.length -1);
 }
 //---------- Button one step left/right ---------->
@@ -336,7 +334,7 @@ function changeDateOneStep(step, loop) { // takes -1 or 1 from left/right-Button
 //---------- Find min and max Data Values for Visualization ---------->
 function find_dataRange(data, dateField) {
     console.log("find_dataRange");
-    min_max_zaehlstelle = {};
+    mapoch.min_max_zaehlstelle = {};
     for (k = 0; k < Object.keys(data[0]).length; k++) { // name of zaehlstelle
         var name_zaehlstelle = Object.keys(mapoch.zaehlstellen_data[0])[k];
         if (name_zaehlstelle === dateField) {
@@ -357,20 +355,20 @@ function find_dataRange(data, dateField) {
             };
 
         }
-        min_max_zaehlstelle[name_zaehlstelle] = min_max; // assign min/max-Values to Object
+        mapoch.min_max_zaehlstelle[name_zaehlstelle] = min_max; // assign min/max-Values to Object
     }
 }
 //--------- Parse Date-Strings into JS Date Objects -------------------->
 function makeDateObjects() {
     for (i = 0; i < mapoch.zaehlstellen_data.length; i++) {
-        var datestring = mapoch.zaehlstellen_data[i][selectedOptions.dateField];
+        var datestring = mapoch.zaehlstellen_data[i][mapoch.selectedOptions.dateField];
         console.log(datestring);
         console.log("i: ", i);
         var thisYear = parseInt(datestring.substring(0, 4));
         var thisMonth = parseInt(datestring.substring(5, 7));
         var thisDay = parseInt(datestring.substring(8, 10));
         var thisDateComplete = new Date(thisYear, thisMonth - 1, thisDay); // JS-Date Month begins at 0
-        mapoch.zaehlstellen_data[i][selectedOptions.dateField] = thisDateComplete;
+        mapoch.zaehlstellen_data[i][mapoch.selectedOptions.dateField] = thisDateComplete;
     }
 }
 //-------- Function for Checkboxes of Weekday-Selection (visuals) ------------>
@@ -516,7 +514,7 @@ function createPolyChart(selectedFeatures) {
     console.log("create bar chart");
     var selectedStreetNames = [];
     for (i = 0; i < selectedFeatures.length; i++) {
-        selectedStreetNames.push(selectedFeatures[i].getProperties()[selectedOptions.coordID]); // get all streetnames (= zaehlstellen) from selection
+        selectedStreetNames.push(selectedFeatures[i].getProperties()[mapoch.selectedOptions.coordID]); // get all streetnames (= zaehlstellen) from selection
     };
 
 
@@ -532,8 +530,8 @@ function createPolyChart(selectedFeatures) {
     // get maximum of selected features at all times (to set maximum of scale)
     var dataMax = 0;
     for (var i = 0; i < selectedStreetNames.length; i++) {
-        if (min_max_zaehlstelle[selectedStreetNames[i]][1] > dataMax) {
-            dataMax = min_max_zaehlstelle[selectedStreetNames[i]][1];
+        if (mapoch.min_max_zaehlstelle[selectedStreetNames[i]][1] > dataMax) {
+            dataMax = mapoch.min_max_zaehlstelle[selectedStreetNames[i]][1];
         }; // if maximum value of selected zaehlstelle is bigger than current maximum value, replace it
     }
     dataMax = Math.ceil(dataMax / 1000) * 1000; // round up to next 1000
@@ -748,7 +746,7 @@ function SelectSinglePoint() {
                 selected.forEach(function(feature) {
                     //console.log("current selected feature: " + feature);
                     //debugger
-                    var zaehlstelle = feature.get(window.selectedOptions.coordID); // zaehlstelle = z.B. b0251
+                    var zaehlstelle = feature.get(window.mapoch.selectedOptions.coordID); // zaehlstelle = z.B. b0251
                     var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
                     //example: min_max_zaehlstelle["b02501"][1] = maximum of b02501
 
@@ -756,7 +754,7 @@ function SelectSinglePoint() {
                     //style when selected
 
                     //var color_hue = 110 - Math.round((amount / min_max_zaehlstelle[zaehlstelle][1]) * 110) // 110 = green, 0 = red, between = yellow
-                    var color_hue = 110 - Math.round(((amount-min_max_zaehlstelle[zaehlstelle][0]) / (min_max_zaehlstelle[zaehlstelle][1]-min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
+                    var color_hue = 110 - Math.round(((amount-mapoch.min_max_zaehlstelle[zaehlstelle][0]) / (mapoch.min_max_zaehlstelle[zaehlstelle][1]-mapoch.min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
                     var feature_color = 'hsl(' + color_hue + ', 99%, 99%)';
 
                     //var radius_size = (Math.round((amount/min_max_zaehlstelle[zaehlstelle][1]))+1)*10;

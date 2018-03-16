@@ -73,13 +73,13 @@ function handlePiechartFile(evt) {
 // helper function to convert dates in piechartdata into real javascript date objects
 function makeDateObjectsPieChart() {
     for (i = 0; i < mapoch.PieChartData.length; i++) {
-        var datestring = mapoch.PieChartData[i][selectedOptions.dateField];
+        var datestring = mapoch.PieChartData[i][mapoch.selectedOptions.dateField];
         console.log(datestring);
         var thisYear = parseInt(datestring.substring(0, 4));
         var thisMonth = parseInt(datestring.substring(5, 7));
         var thisDay = parseInt(datestring.substring(8, 10));
         var thisDateComplete = new Date(thisYear, thisMonth - 1, thisDay); // JS-Date Month begins at 0
-        mapoch.PieChartData[i][selectedOptions.dateField] = thisDateComplete;
+        mapoch.PieChartData[i][mapoch.selectedOptions.dateField] = thisDateComplete;
     }
 }
 
@@ -112,10 +112,10 @@ function addPieCharts(){
     var thisDateInteger = document.getElementById("time_slider").value;
     // look up date in zaehlstellen_data corresponding to timeslider-value
     // to compare 2 dates, date.getTime() is required
-    var thisDate = mapoch.zaehlstellen_data[thisDateInteger][selectedOptions.dateField].getTime();
+    var thisDate = mapoch.zaehlstellen_data[thisDateInteger][mapoch.selectedOptions.dateField].getTime();
     var correctEpochElement = {};
     mapoch.PieChartData.some(function(element){
-        if(element[selectedOptions.dateField].getTime() == thisDate){
+        if(element[mapoch.selectedOptions.dateField].getTime() == thisDate){
             console.log("found element with correct date");
             correctEpochElement = element;
         }
@@ -128,7 +128,7 @@ function addPieCharts(){
     // for each key in the current element, which is not the date, make a pie chart
     // (keys are names to match by, e.g. county names)
     for (var key in mapoch.zaehlstellen_data[thisDateInteger]) {
-        if (key == selectedOptions.dateField){
+        if (key == mapoch.selectedOptions.dateField){
             continue
         }
         else{
