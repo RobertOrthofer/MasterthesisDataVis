@@ -240,8 +240,7 @@ function updateStyle(y) { // y = integer of current day (according to timeslider
 
         var scaledAmount = amount * scaleFactor;
         var radius_size = Math.sqrt(scaledAmount / (Math.PI));
-        console.log("Radius: ", radius_size);
-    
+
         var styles = {
             'Point': [new ol.style.Style({
                 image: new ol.style.Circle({
@@ -289,7 +288,7 @@ function init_dropzone() {
 function applyDate() {
     var currentDate = new Date();
     console.log('applyDate button pressed at ', currentDate.getSeconds())
-    var dateField = document.getElementById("dateSelect").value.split(",");
+    var dateField = document.getElementById("dateSelect").value;
     mapoch.selectedOptions.dateField = dateField;
 
     makeDateObjects();
@@ -416,7 +415,7 @@ function updateInput(thisDate, goLeft, loop) { // go left: true if going left. l
             break;
         };
 
-        var d = mapoch.zaehlstellen_data[thisDate].datum;
+        var d = mapoch.zaehlstellen_data[thisDate][mapoch.selectedOptions.dateField];
         if (typeof(selectedWeekdays) != "undefined" && selectedWeekdays.indexOf(d.getDay()) >= 0) {
             var curr_day = d.getDay();
             var curr_date = d.getDate();
