@@ -172,14 +172,19 @@ function createPieChart(dataObject){
 
     //draw a dropshadow so the charts are "floating" above the map
     ctx.save(); // save style of context, so that drop shadow is not applied on every single element
-    ctx.shadowColor = "#555555";
-    ctx.shadowBlur = 20;
-    ctx.shadowOffsetX = 5;
-    ctx.shadowOffsetY = 5;
-    ctx.fillStyle = "white";
     ctx.beginPath();
     ctx.arc(centerX, centerY, centerY,0,2*Math.PI);
     ctx.closePath();
+    ctx.shadowColor = "#555555";
+    //check if webkit-browser for shadowblur
+    if ('WebkitAppearance' in document.documentElement.style) {
+        ctx.shadowBlur = 15;
+    } else {
+        ctx.shadowBlur = 10;
+    }
+    ctx.shadowOffsetX = 5;
+    ctx.shadowOffsetY = 5;
+    ctx.fillStyle = "black";
     ctx.fill();
     // restore the saved canvas state
     ctx.restore();
@@ -391,7 +396,7 @@ function createPieChartLegend(){
 
     var legendContainer = document.getElementById("size_legend");
     legendContainer.innerHTML = "";
-    legendContainer.append(canvas);
+    legendContainer.appendChild(canvas);
     legendContainer.style.display = "table-cell"; // was "none" because polygon has no circle-size-legend
     legendContainer.style.verticalAlign = 'top' // for some reason doesn't work in css-sheet
 }
