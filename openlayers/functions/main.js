@@ -458,24 +458,24 @@ function updateInput(thisDate, goLeft, loop) { // go left: true if going left. l
 
 
 //--------------------- Select By Polygon (copypasta) ---------------->
-var draw; // global so we can remove it later
+mapoch.draw; // global so we can remove it later
 function SelectByPolygon() {
     // remove point selection
-    if (typeof(select) !== "undefined") {
-        select.getFeatures().item(0).setStyle(null)
-        map.removeInteraction(select);
+    if (typeof(mapoch.select) !== "undefined") {
+        mapoch.select.getFeatures().item(0).setStyle(null)
+        map.removeInteraction(mapoch.select);
     };
-    if (typeof(draw) !== "undefined") {
-        map.removeInteraction(draw);
-        drawingSource.clear();
+    if (typeof(mapoch.draw) !== "undefined") {
+        map.removeInteraction(mapoch.draw);
+        mapoch.drawingSource.clear();
     };
     if (typeof(drawingSource) !== "undefined") {
-        drawingSource.clear();
+        mapoch.drawingSource.clear();
     }
-    drawingSource = new ol.source.Vector(); // global, unsauber?
+    mapoch.drawingSource = new ol.source.Vector(); // global, unsauber?
 
     var drawingLayer = new ol.layer.Vector({
-        source: drawingSource,
+        source: mapoch.drawingSource,
         style: new ol.style.Style({
             fill: new ol.style.Fill({
                 color: 'rgba(191, 214, 239, 0.4)'
@@ -488,31 +488,31 @@ function SelectByPolygon() {
     });
     map.addLayer(drawingLayer);
 
-    draw = new ol.interaction.Draw({
-        source: drawingSource,
+    mapoch.draw = new ol.interaction.Draw({
+        source: mapoch.drawingSource,
         type: 'Polygon'
             //geometryFunction: geometryFunction,  //Function that is called when a geometry's coordinates are updated.
     });
 
-    draw.on('drawstart', function(e) {
-        drawingSource.clear();
+    mapoch.draw.on('drawstart', function(e) {
+        mapoch.drawingSource.clear();
     });
 
-    draw.on('drawend', function(e) {
+    mapoch.draw.on('drawend', function(e) {
         var polygonGeometry = e.feature.getGeometry();
-        selectedFeatures = []; // Array for Point Features  // global because used when timeslider changes, not safe?
-        oldSelectedStreetNames = [] // Array for street names, if same amount of points are selected, but different streetnames -> redraw chart completely
+        mapoch.selectedFeatures = []; // Array for Point Features  // global because used when timeslider changes, not safe?
+        mapoch.oldSelectedStreetNames = [] // Array     for street names, if same amount of points are selected, but different streetnames -> redraw chart completely
 
         for (i = 0; i < geometryLayer.getSource().getFeatures().length; i++) { // for every Point (zaehlstelle)...
             var pointExtent = geometryLayer.getSource().getFeatures()[i].getGeometry().getExtent();
             if (polygonGeometry.intersectsExtent(pointExtent) == true) { //returns true when Polygon intersects with Extent of Point (= Point itself)
-                selectedFeatures.push(geometryLayer.getSource().getFeatures()[i]);
+                mapoch.selectedFeatures.push(geometryLayer.getSource().getFeatures()[i]);
             }
         }
-        console.log("selected features for bar chart: " + selectedFeatures);
-        createPolyChart(selectedFeatures);
+        console.log("selected features for bar chart: " + mapoch.selectedFeatures);
+        createPolyChart(mapoch.selectedFeatures);
     });
-    map.addInteraction(draw);
+    map.addInteraction(mapoch.draw);
 }
 
 //------------------------ Create Charts ---------------------------->
