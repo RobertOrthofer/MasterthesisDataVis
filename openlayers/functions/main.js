@@ -441,8 +441,8 @@ function updateInput(thisDate, goLeft, loop) { // go left: true if going left. l
 
             foundNextWeekday = true;
             document.getElementById("time_slider").value = thisDate; // Update of Timeslider
-            if (typeof selectedFeatures !== "undefined" && selectedFeatures.length > 0) {
-                createPolyChart(selectedFeatures)
+            if (typeof mapoch.selectedFeatures !== "undefined" && mapoch.selectedFeatures.length > 0) {
+                createPolyChart(mapoch.selectedFeatures)
             }
         } else if (selectedWeekdays.length == 0) {
             alert("No Weekday Selected");
@@ -501,7 +501,7 @@ function SelectByPolygon() {
     mapoch.draw.on('drawend', function(e) {
         var polygonGeometry = e.feature.getGeometry();
         mapoch.selectedFeatures = []; // Array for Point Features  // global because used when timeslider changes, not safe?
-        mapoch.oldSelectedStreetNames = [] // Array     for street names, if same amount of points are selected, but different streetnames -> redraw chart completely
+        //mapoch.oldSelectedStreetNames = [] // Array     for street names, if same amount of points are selected, but different streetnames -> redraw chart completely
 
         for (i = 0; i < geometryLayer.getSource().getFeatures().length; i++) { // for every Point (zaehlstelle)...
             var pointExtent = geometryLayer.getSource().getFeatures()[i].getGeometry().getExtent();
@@ -550,15 +550,16 @@ function createPolyChart(selectedFeatures) {
     var destroyChart = false;
 
     // JS Magic for comparing scalar arrays
-    //var SameStreetNames = selectedStreetNames.length!==oldSelectedStreetNames.length && selectedStreetNames.every(function(v,i) { return v === oldSelectedStreetNames[i]});
-    var SameStreetNames = selectedStreetNames.equals(oldSelectedStreetNames);
-    if (myChart.id !== "myChart" && (selectedFeatures.length !== myChart.data.datasets[0].data.length || !SameStreetNames)) {
+    //var SameStreetNames = selectedStreetNames.length!==mapoch.oldSelectedStreetNames.length && selectedStreetNames.every(function(v,i) { return v === mapoch.oldSelectedStreetNames[i]});
+    var SameStreetNames = selectedStreetNames.equals(mapoch.oldSelectedStreetNames);
+
+    if (myChart.id !== "myChart" && !SameStreetNames) {
         myChart.destroy();
         destroyChart = true;
         console.log("destroy Chart, because the selected object names changed");
     }
     // overwrite the old selected Street Names, so if e.g. 1 point is selected both times, but its a different point, the chart is getting destroyed and remade
-    oldSelectedStreetNames = selectedStreetNames.slice() // global, not referenced
+    mapoch.oldSelectedStreetNames = selectedStreetNames // global, not referenced
 
     // hide snapshot button if no point is selected (chart is invisible anyways, because no redraw)
     if (selectedFeatures.length === 0) {
