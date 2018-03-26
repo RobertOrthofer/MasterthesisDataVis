@@ -609,7 +609,7 @@ function createPolyChart(selectedFeatures) {
         document.getElementById("snapshot_button").style.display = "block";
     }
     // make div visible if something is in it
-    if (selectedFeatures.length > 0 || (typeof(snapshotArray) != "undefined" && snapshotArray.length > 0)) {
+    if (selectedFeatures.length > 0 || (typeof(mapoch.snapshotArray) != "undefined" && mapoch.snapshotArray.length > 0)) {
         //	document.getElementById("canvas_div").style.visibility = 'visible';
         console.log("make bar chart div visible");
         document.getElementById("canvas_div").style.display = "block";
@@ -622,15 +622,15 @@ function createPolyChart(selectedFeatures) {
 // ---------------------------------------- Snapshot function --------------------------------------------------------------
 function snapshot() {
     // create empty snapshot array
-    if (typeof(snapshotArray) == "undefined") {
-        snapshotArray = [];
+    if (typeof(mapoch.snapshotArray) == "undefined") {
+        mapoch.snapshotArray = [];
     };
 
     // create array with parameters of this snapshot
     var thisSnapshot = [];
     thisSnapshot[0] = parseInt(document.getElementById("time_slider").value); // Save Current date
-    thisSnapshot[1] = selectedFeatures; // Save Current Selected Features
-    snapshotArray.push(thisSnapshot);
+    thisSnapshot[1] = mapoch.selectedFeatures; // Save Current Selected Features
+    mapoch.snapshotArray.push(thisSnapshot);
 
     // append row to the HTML table
     var tbl = document.getElementById('snapshot_table') // table reference
@@ -656,8 +656,8 @@ function snapshot() {
 };
 
 function showSnapshot(snapshotIndex) {
-    updateInput(snapshotArray[snapshotIndex][0], false, false);
-    createPolyChart(snapshotArray[snapshotIndex][1]);
+    updateInput(mapoch.snapshotArray[snapshotIndex][0], false, false);
+    createPolyChart(mapoch.snapshotArray[snapshotIndex][1]);
 };
 
 function deleteSnapshots() {
@@ -668,7 +668,7 @@ function deleteSnapshots() {
     for (i = lastRow; i >= 0; i--) {
         tbl.deleteRow(i);
     }
-    snapshotArray = [];
+    mapoch.snapshotArray = [];
     document.getElementById("snapshot_div").style.visibility = "hidden";
 }
 
@@ -733,17 +733,17 @@ Array.prototype.equals = function(array, strict) {
 
 function SelectSinglePoint() {
     // remove polygon selection
-    if (typeof(draw) !== "undefined") {
-        map.removeInteraction(draw);
-        drawingSource.clear();
+    if (typeof(mapoch.draw) !== "undefined") {
+        map.removeInteraction(mapoch.draw);
+        mapoch.drawingSource.clear();
     };
-    select = new ol.interaction.Select(); // Interaktion
-    map.addInteraction(select); // Interaktion der Karte hinzufügen
+    mapoch.select = new ol.interaction.Select(); // Interaktion
+    map.addInteraction(mapoch.select); // Interaktion der Karte hinzufügen
 
     // single point selection
-    select.on('select', function(e) {
+    mapoch.select.on('select', function(e) {
         if (typeof(mapoch.zaehlstellen_data) !== "undefined") {
-            var features = select.getFeatures(); // Feature Array
+            var features = mapoch.select.getFeatures(); // Feature Array
             var feature = features.item(0); //  first element  // why first?
             var y = parseInt(document.getElementById("time_slider").value);
 
@@ -753,14 +753,12 @@ function SelectSinglePoint() {
             if (selected.length) {
                 selected.forEach(function(feature) {
                     //console.log("current selected feature: " + feature);
-                    //debugger
-                    var zaehlstelle = feature.get(window.mapoch.selectedOptions.coordID); // zaehlstelle = z.B. b0251
+                    var zaehlstelle = feature.get(mapoch.selectedOptions.coordID); // zaehlstelle = z.B. b0251
                     var amount = mapoch.zaehlstellen_data[y][zaehlstelle]; // amount = z.B. 1055
                     //example: min_max_zaehlstelle["b02501"][1] = maximum of b02501
 
                     var geometryType = feature.get('geometry').getType();
                     //style when selected
-
                     //var color_hue = 110 - Math.round((amount / min_max_zaehlstelle[zaehlstelle][1]) * 110) // 110 = green, 0 = red, between = yellow
                     var color_hue = 110 - Math.round(((amount-mapoch.min_max_zaehlstelle[zaehlstelle][0]) / (mapoch.min_max_zaehlstelle[zaehlstelle][1]-mapoch.min_max_zaehlstelle[zaehlstelle][0])) * 110) // 110 = green, 0 = red, between = yellow
                     var feature_color = 'hsl(' + color_hue + ', 99%, 99%)';
@@ -768,7 +766,6 @@ function SelectSinglePoint() {
                     //var radius_size = (Math.round((amount/min_max_zaehlstelle[zaehlstelle][1]))+1)*10;
                     var max_thisDay = getMaxThisDay(y);
                     var radius_size = Math.sqrt((amount / (2 * Math.PI))) / Math.sqrt((max_thisDay / (2 * Math.PI))) * 35;
-                    //debugger
                     var selectStyle;
                     if (geometryType === "Point") {
                         selectStyle = new ol.style.Style({
@@ -803,8 +800,8 @@ function SelectSinglePoint() {
                 });
             }
 
-            selectedFeatures = selected.length ? [feature] : [];
-            createPolyChart(selectedFeatures);
+            mapoch.selectedFeatures = selected.length ? [feature] : [];
+            createPolyChart(mapoch.selectedFeatures);
         }
     });
 
