@@ -541,7 +541,11 @@ function createPolyChart(selectedFeatures) {
             dataMax = mapoch.min_max_zaehlstelle[selectedStreetNames[i]][1];
         }; // if maximum value of selected zaehlstelle is bigger than current maximum value, replace it
     }
-    dataMax = Math.ceil(dataMax / 1000) * 1000; // round up to next 1000
+    if ( dataMax < 1 ) {
+        dataMax = 1;
+    } else {
+        dataMax = Math.ceil(dataMax / 1000) * 1000; // round up to next 1000
+    }
     console.log("maximum of selected Data: " + dataMax);
 
 
