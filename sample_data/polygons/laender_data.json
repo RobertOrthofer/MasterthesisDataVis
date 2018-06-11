@@ -1,37 +1,40 @@
 [{
         "datum": "2008-09-28",
-        "Burgenland": 704,
-        "Kärnten": 3818,
-        "Niederösterreich": 2542,
-        "Oberösterreich": 8261,
-        "Salzburg": 2333,
-        "Steiermark": 1922,
-        "Tirol": 1245,
-        "Vorarlberg": 1000,
-        "Wien": 11720
+        "Burgenland": 0.84,
+        "Kärnten": 0.78,
+        "Niederösterreich": 0.85,
+        "Oberösterreich": 0.82,
+        "Salzburg": 0.81,
+        "Steiermark": 0.80,
+        "Tirol": 0.76,
+        "Vorarlberg": 0.7223,
+        "Wien": 0.7612
+
     },
     {
         "datum": "2013-09-29",
-        "Burgenland": 404,
-        "Kärnten": 4818,
-        "Niederösterreich": 1542,
-        "Oberösterreich": 7261,
-        "Salzburg": 1333,
-        "Steiermark": 1422,
-        "Tirol": 1545,
-        "Vorarlberg": 1500,
-        "Wien": 12000
+        "Burgenland": 0.8279,
+        "Kärnten": 0.7249,
+        "Niederösterreich": 0.8104,
+        "Oberösterreich": 0.7833,
+        "Salzburg": 0.7449,
+        "Steiermark": 0.7538,
+        "Tirol": 0.67,
+        "Vorarlberg": 0.6594,
+        "Wien": 0.6973
+
     },
     {
         "datum": "2017-10-15",
-        "Burgenland": 604,
-        "Kärnten": 5818,
-        "Niederösterreich": 2542,
-        "Oberösterreich": 8261,
-        "Salzburg": 1733,
-        "Steiermark": 1822,
-        "Tirol": 1545,
-        "Vorarlberg": 1900,
-        "Wien": 11000
+        "Burgenland": 0.8639,
+        "Kärnten": 0.7854,
+        "Niederösterreich": 0.8445,
+        "Oberösterreich": 0.8199,
+        "Salzburg": 0.7858,
+        "Steiermark": 0.79,
+        "Tirol": 0.7057,
+        "Vorarlberg": 0.7142,
+        "Wien": 0.7361
+
     }
 ]
