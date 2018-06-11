@@ -1,33 +1,199 @@
-[{"datum":"2008-09-28",
-    "Oberösterreich":{"attr1": 144, "attr2": 80, "attr3": 53, "attr4": 44, "attr5": 19 },
-    "Tirol":{"attr1": 100, "attr2": 77, "attr3": 57, "attr4": 60, "attr5": 14 },
-    "Steiermark":{"attr1": 111, "attr2": 64, "attr3": 51, "attr4": 77, "attr5": 10 },
-    "Burgenland":{"attr1": 121, "attr2": 82, "attr3": 44, "attr4": 34, "attr5": 15 },
-    "Niederösterreich":{"attr1": 161, "attr2": 88, "attr3": 60, "attr4": 53, "attr5": 28 },
-    "Wien":{"attr1": 195, "attr2": 98, "attr3": 84, "attr4": 26, "attr5": 30 },
-    "Kärnten":{"attr1": 150, "attr2": 73, "attr3": 90, "attr4": 31, "attr5": 8 },
-    "Vorarlberg":{"attr1": 90, "attr2": 67, "attr3": 31, "attr4": 19, "attr5": 3 },
-    "Salzburg":{"attr1": 120, "attr2": 98, "attr3": 50, "attr4": 77, "attr5": 15 }
-},
-{"datum":"2013-09-29",
-    "Oberösterreich":{"attr1": 140, "attr2": 70, "attr3": 33, "attr4": 44, "attr5": 9 },
-    "Tirol":{"attr1": 80, "attr2": 77, "attr3": 57, "attr4": 50, "attr5": 14 },
-    "Steiermark":{"attr1": 71, "attr2": 64, "attr3": 51, "attr4": 77, "attr5": 30 },
-    "Burgenland":{"attr1": 91, "attr2": 82, "attr3": 24, "attr4": 34, "attr5": 15 },
-    "Niederösterreich":{"attr1": 131, "attr2": 88, "attr3": 90, "attr4": 53, "attr5": 28 },
-    "Wien":{"attr1": 145, "attr2": 48, "attr3": 84, "attr4": 66, "attr5": 30 },
-    "Kärnten":{"attr1": 110, "attr2": 73, "attr3": 20, "attr4": 11, "attr5": 8 },
-    "Vorarlberg":{"attr1": 40, "attr2": 67, "attr3": 61, "attr4": 19, "attr5": 3 },
-    "Salzburg":{"attr1": 90, "attr2": 98, "attr3": 30, "attr4": 77, "attr5": 40 }
-},
-{"datum":"2017-10-15",
-    "Oberösterreich":{"attr1": 100, "attr2": 80, "attr3": 33, "attr4": 64, "attr5": 29 },
-    "Tirol":{"attr1": 90, "attr2": 97, "attr3": 57, "attr4": 20, "attr5": 14 },
-    "Steiermark":{"attr1": 61, "attr2": 44, "attr3": 51, "attr4": 37, "attr5": 30 },
-    "Burgenland":{"attr1": 71, "attr2": 52, "attr3": 24, "attr4": 14, "attr5": 15 },
-    "Niederösterreich":{"attr1": 101, "attr2": 88, "attr3": 40, "attr4": 53, "attr5": 8 },
-    "Wien":{"attr1": 135, "attr2": 78, "attr3": 64, "attr4": 46, "attr5": 30 },
-    "Kärnten":{"attr1": 90, "attr2": 60, "attr3": 20, "attr4": 11, "attr5": 8 },
-    "Vorarlberg":{"attr1": 60, "attr2": 37, "attr3": 31, "attr4": 19, "attr5": 3 },
-    "Salzburg":{"attr1": 60, "attr2": 88, "attr3": 60, "attr4": 47, "attr5": 20 }
-}]
+[{
+        "datum": "2008-09-28",
+        "Oberösterreich": {
+            "attr1": 144,
+            "attr2": 80,
+            "attr3": 53,
+            "attr4": 44,
+            "attr5": 19
+        },
+        "Tirol": {
+            "attr1": 100,
+            "attr2": 77,
+            "attr3": 57,
+            "attr4": 60,
+            "attr5": 14
+        },
+        "Steiermark": {
+            "attr1": 111,
+            "attr2": 64,
+            "attr3": 51,
+            "attr4": 77,
+            "attr5": 10
+        },
+        "Burgenland": {
+            "attr1": 121,
+            "attr2": 82,
+            "attr3": 44,
+            "attr4": 34,
+            "attr5": 15
+        },
+        "Niederösterreich": {
+            "attr1": 161,
+            "attr2": 88,
+            "attr3": 60,
+            "attr4": 53,
+            "attr5": 28
+        },
+        "Wien": {
+            "attr1": 195,
+            "attr2": 98,
+            "attr3": 84,
+            "attr4": 26,
+            "attr5": 30
+        },
+        "Kärnten": {
+            "attr1": 150,
+            "attr2": 73,
+            "attr3": 90,
+            "attr4": 31,
+            "attr5": 8
+        },
+        "Vorarlberg": {
+            "attr1": 90,
+            "attr2": 67,
+            "attr3": 31,
+            "attr4": 19,
+            "attr5": 3
+        },
+        "Salzburg": {
+            "attr1": 120,
+            "attr2": 98,
+            "attr3": 50,
+            "attr4": 77,
+            "attr5": 15
+        }
+    },
+    {
+        "datum": "2013-09-29",
+        "Oberösterreich": {
+            "attr1": 140,
+            "attr2": 70,
+            "attr3": 33,
+            "attr4": 44,
+            "attr5": 9
+        },
+        "Tirol": {
+            "attr1": 80,
+            "attr2": 77,
+            "attr3": 57,
+            "attr4": 50,
+            "attr5": 14
+        },
+        "Steiermark": {
+            "attr1": 71,
+            "attr2": 64,
+            "attr3": 51,
+            "attr4": 77,
+            "attr5": 30
+        },
+        "Burgenland": {
+            "attr1": 91,
+            "attr2": 82,
+            "attr3": 24,
+            "attr4": 34,
+            "attr5": 15
+        },
+        "Niederösterreich": {
+            "attr1": 131,
+            "attr2": 88,
+            "attr3": 90,
+            "attr4": 53,
+            "attr5": 28
+        },
+        "Wien": {
+            "attr1": 145,
+            "attr2": 48,
+            "attr3": 84,
+            "attr4": 66,
+            "attr5": 30
+        },
+        "Kärnten": {
+            "attr1": 110,
+            "attr2": 73,
+            "attr3": 20,
+            "attr4": 11,
+            "attr5": 8
+        },
+        "Vorarlberg": {
+            "attr1": 40,
+            "attr2": 67,
+            "attr3": 61,
+            "attr4": 19,
+            "attr5": 3
+        },
+        "Salzburg": {
+            "attr1": 90,
+            "attr2": 98,
+            "attr3": 30,
+            "attr4": 77,
+            "attr5": 40
+        }
+    },
+    {
+        "datum": "2017-10-15",
+        "Oberösterreich": {
+            "attr1": 100,
+            "attr2": 80,
+            "attr3": 33,
+            "attr4": 64,
+            "attr5": 29
+        },
+        "Tirol": {
+            "attr1": 90,
+            "attr2": 97,
+            "attr3": 57,
+            "attr4": 20,
+            "attr5": 14
+        },
+        "Steiermark": {
+            "attr1": 61,
+            "attr2": 44,
+            "attr3": 51,
+            "attr4": 37,
+            "attr5": 30
+        },
+        "Burgenland": {
+            "attr1": 71,
+            "attr2": 52,
+            "attr3": 24,
+            "attr4": 14,
+            "attr5": 15
+        },
+        "Niederösterreich": {
+            "attr1": 101,
+            "attr2": 88,
+            "attr3": 40,
+            "attr4": 53,
+            "attr5": 8
+        },
+        "Wien": {
+            "attr1": 135,
+            "attr2": 78,
+            "attr3": 64,
+            "attr4": 46,
+            "attr5": 30
+        },
+        "Kärnten": {
+            "attr1": 90,
+            "attr2": 60,
+            "attr3": 20,
+            "attr4": 11,
+            "attr5": 8
+        },
+        "Vorarlberg": {
+            "attr1": 60,
+            "attr2": 37,
+            "attr3": 31,
+            "attr4": 19,
+            "attr5": 3
+        },
+        "Salzburg": {
+            "attr1": 60,
+            "attr2": 88,
+            "attr3": 60,
+            "attr4": 47,
+            "attr5": 20
+        }
+    }
+]

@@ -1,3 +1,37 @@
-[{"datum":"2008-09-28","Burgenland":704,"Kärnten":3818,"Niederösterreich":2542,"Oberösterreich":8261,"Salzburg":2333,"Steiermark":1922,"Tirol":1245,"Vorarlberg":1000,"Wien":11720},
-{"datum":"2013-09-29","Burgenland":404,"Kärnten":4818,"Niederösterreich":1542,"Oberösterreich":7261,"Salzburg":1333,"Steiermark":1422,"Tirol":1545,"Vorarlberg":1500,"Wien":12000},
-{"datum":"2017-10-15","Burgenland":604,"Kärnten":5818,"Niederösterreich":2542,"Oberösterreich":8261,"Salzburg":1733,"Steiermark":1822,"Tirol":1545,"Vorarlberg":1900,"Wien":11000}]
+[{
+        "datum": "2008-09-28",
+        "Burgenland": 704,
+        "Kärnten": 3818,
+        "Niederösterreich": 2542,
+        "Oberösterreich": 8261,
+        "Salzburg": 2333,
+        "Steiermark": 1922,
+        "Tirol": 1245,
+        "Vorarlberg": 1000,
+        "Wien": 11720
+    },
+    {
+        "datum": "2013-09-29",
+        "Burgenland": 404,
+        "Kärnten": 4818,
+        "Niederösterreich": 1542,
+        "Oberösterreich": 7261,
+        "Salzburg": 1333,
+        "Steiermark": 1422,
+        "Tirol": 1545,
+        "Vorarlberg": 1500,
+        "Wien": 12000
+    },
+    {
+        "datum": "2017-10-15",
+        "Burgenland": 604,
+        "Kärnten": 5818,
+        "Niederösterreich": 2542,
+        "Oberösterreich": 8261,
+        "Salzburg": 1733,
+        "Steiermark": 1822,
+        "Tirol": 1545,
+        "Vorarlberg": 1900,
+        "Wien": 11000
+    }
+]
