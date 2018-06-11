@@ -313,7 +313,13 @@ function mapColors(PieChartDataElement){
     //original source: Stephen Few’s book, Show Me the Numbers
     //http://castor.tugraz.at/F/7YY47NQH8A3D2HS8PTK3TV54XXB8VSJ879XKKUQHKYTD2VKUAF-63076?func=item-global&doc_library=TUG01&doc_number=000508124&year=&volume=&sub_library=
     // gray is lighter to enable black labels
-    var PieChartColors = ['#676767', '#5DA5DA', '#FAA43A', '#60BD68', '#F17CB0', '#B2912F','#B276B2','#DECF3F','#F15854']; // Colors of each slice of the Pie Chart
+    var PieChartColors;
+    if (mapoch.currentFiles.PieChart === 'laender_wahlen_election.json') {
+        PieChartColors = ['#ed2121', '#1c1c1c', '#2c35e0', '#efe15d']
+    } else {
+        PieChartColors = ['#676767', '#5DA5DA', '#FAA43A', '#60BD68', '#F17CB0', '#B2912F','#B276B2','#DECF3F','#F15854'] // Colors of each slice of the Pie Chart
+    }
+
     var i = 0;
     for (var key in PieChartDataElement) {
         mapoch.PieChartColorMap[key] = PieChartColors[i++];
