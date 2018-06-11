@@ -1,0 +1,36 @@
+[{
+    "datum":"2008-09-28",
+    "Oberösterreich":{"SPÖ": 264315, "ÖVP": 232153, "FPÖ": 165139, "Sonstige": 206171 },
+    "Tirol":{"SPÖ": 65982, "ÖVP": 65982, "FPÖ": 62146, "Sonstige": 123872 },
+    "Steiermark":{"SPÖ": 220856, "ÖVP": 197395, "FPÖ": 130511, "Sonstige": 205175 },
+    "Burgenland":{"SPÖ": 77627, "ÖVP": 56304, "FPÖ": 31326, "Sonstige": 28508 },
+    "Niederösterreich":{"SPÖ": 314978, "ÖVP": 334358, "FPÖ": 187542, "Sonstige": 200179 },
+    "Wien":{"SPÖ": 292371, "ÖVP": 140530, "FPÖ": 171658, "Sonstige": 235758 },
+    "Kärnten":{"SPÖ": 96702, "ÖVP": 50206, "FPÖ": 26091, "Sonstige": 171542},
+    "Vorarlberg":{"SPÖ": 26152, "ÖVP": 58021, "FPÖ": 29821, "Sonstige": 71116},
+    "Salzburg":{"SPÖ": 71223, "ÖVP": 86899, "FPÖ": 52795, "Sonstige": 88097 }
+},
+{
+    "datum":"2013-09-29",
+    "Oberösterreich":{"SPÖ": 228293, "ÖVP": 212843, "FPÖ": 180041, "Sonstige": 218223},
+    "Tirol":{"SPÖ": 64923, "ÖVP": 114754, "FPÖ": 68761, "Sonstige": 106519 },
+    "Steiermark":{"SPÖ": 172307, "ÖVP": 151438, "FPÖ": 173908, "Sonstige": 225505 },
+    "Burgenland":{"SPÖ": 70222, "ÖVP": 50426, "FPÖ": 32705, "Sonstige": 35031 },
+    "Niederösterreich":{"SPÖ": 279988, "ÖVP": 310345, "FPÖ": 190601, "Sonstige": 233064 },
+    "Wien":{"SPÖ": 251623, "ÖVP": 115316, "FPÖ": 163501, "Sonstige": 264742 },
+    "Kärnten":{"SPÖ": 102278, "ÖVP": 48140, "FPÖ": 56513, "Sonstige": 109075},
+    "Vorarlberg":{"SPÖ": 23021, "ÖVP": 46154, "FPÖ": 35407, "Sonstige": 70634},
+    "Salzburg":{"SPÖ": 65950, "ÖVP": 76460, "FPÖ": 60876, "Sonstige": 83320 }
+},
+{
+    "datum":"2017-10-15",
+    "Oberösterreich":{"SPÖ": 246201, "ÖVP": 280595, "FPÖ": 239444, "Sonstige": 125835 },
+    "Tirol":{"SPÖ": 85650, "ÖVP": 158092, "FPÖ": 102610, "Sonstige": 65070 },
+    "Steiermark":{"SPÖ": 192738, "ÖVP": 241917, "FPÖ": 225990, "Sonstige": 107490 },
+    "Burgenland":{"SPÖ": 64070, "ÖVP": 63858, "FPÖ": 49127, "Sonstige": 17575 },
+    "Niederösterreich":{"SPÖ": 267348, "ÖVP": 384279, "FPÖ": 280011, "Sonstige": 147901},
+    "Wien":{"SPÖ": 300664, "ÖVP": 188273, "FPÖ": 186088, "Sonstige": 196647 },
+    "Kärnten":{"SPÖ": 99923, "ÖVP": 91458, "FPÖ": 108215, "Sonstige": 41192},
+    "Vorarlberg":{"SPÖ": 34961, "ÖVP": 67982, "FPÖ": 47837, "Sonstige": 45105},
+    "Salzburg":{"SPÖ": 70191, "ÖVP": 119072, "FPÖ": 77120, "Sonstige": 49400 }
+}]

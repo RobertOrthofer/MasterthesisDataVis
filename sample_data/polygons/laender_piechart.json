@@ -1,4 +1,4 @@
-[{"datum":"2011-01-01",
+[{"datum":"2008-09-28",
     "Oberösterreich":{"attr1": 144, "attr2": 80, "attr3": 53, "attr4": 44, "attr5": 19 },
     "Tirol":{"attr1": 100, "attr2": 77, "attr3": 57, "attr4": 60, "attr5": 14 },
     "Steiermark":{"attr1": 111, "attr2": 64, "attr3": 51, "attr4": 77, "attr5": 10 },
@@ -9,7 +9,7 @@
     "Vorarlberg":{"attr1": 90, "attr2": 67, "attr3": 31, "attr4": 19, "attr5": 3 },
     "Salzburg":{"attr1": 120, "attr2": 98, "attr3": 50, "attr4": 77, "attr5": 15 }
 },
-{"datum":"2012-01-01",
+{"datum":"2013-09-29",
     "Oberösterreich":{"attr1": 140, "attr2": 70, "attr3": 33, "attr4": 44, "attr5": 9 },
     "Tirol":{"attr1": 80, "attr2": 77, "attr3": 57, "attr4": 50, "attr5": 14 },
     "Steiermark":{"attr1": 71, "attr2": 64, "attr3": 51, "attr4": 77, "attr5": 30 },
@@ -20,7 +20,7 @@
     "Vorarlberg":{"attr1": 40, "attr2": 67, "attr3": 61, "attr4": 19, "attr5": 3 },
     "Salzburg":{"attr1": 90, "attr2": 98, "attr3": 30, "attr4": 77, "attr5": 40 }
 },
-{"datum":"2013-01-01",
+{"datum":"2017-10-15",
     "Oberösterreich":{"attr1": 100, "attr2": 80, "attr3": 33, "attr4": 64, "attr5": 29 },
     "Tirol":{"attr1": 90, "attr2": 97, "attr3": 57, "attr4": 20, "attr5": 14 },
     "Steiermark":{"attr1": 61, "attr2": 44, "attr3": 51, "attr4": 37, "attr5": 30 },
