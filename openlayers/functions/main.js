@@ -29,7 +29,8 @@ function initMap() {
 
     viewpoint = new ol.View({
         center: ol.proj.fromLonLat([13.4, 47.4633]),
-        zoom: 7
+        zoom: 7,
+        minZoom: 7
     });
     map.setView(viewpoint);
 
