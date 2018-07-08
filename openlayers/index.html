@@ -2,9 +2,9 @@
 
 <html>
  <head>
-	<title> Zaehlstellen </title>
+	<title> Mapoch </title>
 
-	<meta charset="utf-8">
+	  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://openlayers.org/en/v3.17.1/build/ol-debug.js"> </script>
@@ -33,13 +33,14 @@
         <div id="hideDropZone" onclick="hideDropZone()">▲</div>
         <!--<div id="hideDropZone" onclick="hideDropZone()">  △ &nbsp;&nbsp;&nbsp;&nbsp; Hide Drop Zones  &nbsp;&nbsp;&nbsp;&nbsp; △  </div>-->
 		<div id="drop_zone_holder">
-            <div id="top_drop_zones">
-			    <div id="drop_zone_data_file" class="drop_zone">Drop Coordinates File<br>(JSON or csv)</div>
-			    <div id="drop_zone_coords_file" class="drop_zone">Drop Data File<br>(JSON or csv)</div>
-            </div>
-            <div id="bottom_drop_zones">
-                <div id="optional_drop_zone">(Optional) Overlay Diagram Data JSON</div>
-            </div>
+      <div id='resetButton' onclick="reset()">reset</div>
+      <div id="top_drop_zones">
+	      <div id="drop_zone_data_file" class="drop_zone">Drop Coordinates File<br>(JSON or csv)</div>
+	      <div id="drop_zone_coords_file" class="drop_zone">Drop Data File<br>(JSON or csv)</div>
+      </div>
+      <div id="bottom_drop_zones">
+        <div id="optional_drop_zone">(Optional) Overlay Diagram Data JSON</div>
+      </div>
 		</div>
     <div id="menuBelowDropZones">
         <div id="hideSelectionHolder">
@@ -87,8 +88,8 @@
     		</div>
     		<div id ="sliderDiv"> <!-- invisible at first -->
     			<div id="weekday_div">
-    					<input checked id="mon" onclick="change_state(this)" type="checkbox" value="1" name="weekday"/><label for="mon" class="input-check"> Mon </label>
-    					<input checked id="tue" onclick="change_state(this)" type="checkbox" value="2" name="weekday"/><label for="tue" class="input-check"> Tue </label>
+    					<input checked id="mon" onclick="change_sbtate(this)" type="checkbox" value="1" name="weekday"/><label for="mon" class="input-check"> Mon </label>
+    					<input checked id="tue" onclick="change_st ate(this)" type="checkbox" value="2" name="weekday"/><label for="tue" class="input-check"> Tue </label>
     					<input checked id="wed" onclick="change_state(this)" type="checkbox" value="3" name="weekday"/><label for="wed" class="input-check"> Wed </label>
     					<input checked id="thu" onclick="change_state(this)" type="checkbox" value="4" name="weekday"/><label for="thu" class="input-check"> Thu </label>
     					<input checked id="fri" onclick="change_state(this)" type="checkbox" value="5" name="weekday"/><label for="fri" class="input-check"> Fri </label>
@@ -109,8 +110,9 @@
     			</div>
     			<p id="currentDate"> </p>
           <span id="selects">
-    			  <button type="button" onclick="SelectByPolygon()" class="other_button"> Select by Polygon </button>
-    			  <button type="button" onclick="SelectSinglePoint()" class="other_button"> Select Point </button>
+    			  <button type="button" onclick="SelectByPolygon()" class="other_button"> select multiple </button>
+    			  <button type="button" onclick="SelectSinglePoint()" class="other_button"> select single </button>
+    			  <button type="button" onclick="unselect()" class="other_button"> unselect </button>
           </span>
     			<div id="canvas_div">
     				<canvas id="myChart"></canvas>
