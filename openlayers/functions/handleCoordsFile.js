@@ -2,7 +2,7 @@
 
 // helper function to convert .csv to geoJSON
 function csvToGeoJSON() { //csv = reader.result
-    var lines = csv.split(/[\r\n]+/); // split for windows and mac csv (newline or carriage return)
+    var lines = mapoch.csv.split(/[\r\n]+/); // split for windows and mac csv (newline or carriage return)
     //delete window.csv; // reader.result from drag&drop not needed anymore
     var headers = lines[0].split(","); //not needed?
     var matchID = document.getElementById("coordIDSelect").value;
@@ -116,7 +116,7 @@ function handleCoordsFile(evt) {
         if (isCSV) { // check if filetiype is csv
             mapoch.currentFiles.CoordsFileType = "csv";
             columnNames = getColumnNames(reader.result);
-            window.csv = reader.result; // temporary save reader.result into global variable, until geoJSON can be created with user-inputs
+            mapoch.csv = reader.result; // temporary save reader.result into global variable, until geoJSON can be created with user-inputs
             populateSelection(columnNames, 1);
         } else if (isJSON) {
             mapoch.currentFiles.CoordsFileType = "JSON";
