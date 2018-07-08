@@ -160,6 +160,23 @@
 		-ms-user-select: none; /* IE10+ */
 	}
 
+	#resetButton {
+		min-height: 20px;
+		margin-top: 10px;
+		margin-left: 10px;
+		margin-right: 10px;
+		width: calc(100%-20px);
+		color: white;
+		background-color: #FF5858;
+		border: 2px;
+		border-color: #FFb8b8;
+		/* Make Text Unselectable */
+		-webkit-user-select: none; /* Chrome/Safari */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* IE10+ */
+		cursor: pointer;
+	}
+
 	#menuBelowDropZones{
 		transition: transform 0.3s;
 	}
@@ -347,8 +364,7 @@ button::-moz-focus-inner {
 	}
 
 	#snapshot_div{
-		width: calc(100% - 20px);
-		margin-left: 45px;
+		width: 100%;
 		margin-bottom: 15px;
 		overflow: auto;
 	}
@@ -578,13 +594,12 @@ button::-moz-focus-inner {
 	}
 
 	#showSnapshot{
-		width: 90%;
+		width: calc(100% - 20px);
 		float: left;
 	}
 
 	#delete_snapshots{
 		float: right;
-		margin-right: 10%;
 		-webkit-transition-duration: 0s; /* Safari */
 		transition-duration: 0s;
 	}
