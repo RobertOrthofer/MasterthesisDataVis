@@ -16,7 +16,8 @@ var mapoch = {
         coords: false,
         date: false,
         pieCharts: false
-    }
+    },
+    csv: ""
 }
 
 //import Chart from './node_modules/chart.js/src/chart.js';
@@ -370,8 +371,6 @@ function find_dataRange(data, dateField) {
 function makeDateObjects() {
     for (i = 0; i < mapoch.zaehlstellen_data.length; i++) {
         var datestring = mapoch.zaehlstellen_data[i][mapoch.selectedOptions.dateField];
-        console.log(datestring);
-        console.log("i: ", i);
         var thisYear = parseInt(datestring.substring(0, 4));
         var thisMonth = parseInt(datestring.substring(5, 7));
         var thisDay = parseInt(datestring.substring(8, 10));
@@ -461,18 +460,10 @@ function updateInput(thisDate, goLeft, loop) { // go left: true if going left. l
 //--------------------- Select By Polygon (copypasta) ---------------->
 mapoch.draw; // global so we can remove it later
 function SelectByPolygon() {
-    // remove point selection
-    if (typeof(mapoch.select) !== "undefined") {
-        mapoch.select.getFeatures().item(0).setStyle(null)
-        map.removeInteraction(mapoch.select);
-    };
-    if (typeof(mapoch.draw) !== "undefined") {
-        map.removeInteraction(mapoch.draw);
-        mapoch.drawingSource.clear();
-    };
-    if (typeof(drawingSource) !== "undefined") {
-        mapoch.drawingSource.clear();
-    }
+
+    //remove old drawing layer and old select interactions
+    removeDrawing();
+
     mapoch.drawingSource = new ol.source.Vector(); // global, unsauber?
 
     var drawingLayer = new ol.layer.Vector({
@@ -487,6 +478,7 @@ function SelectByPolygon() {
             })
         })
     });
+    drawingLayer.set('name', 'drawingLayer');
     map.addLayer(drawingLayer);
 
     mapoch.draw = new ol.interaction.Draw({
@@ -558,8 +550,8 @@ function createPolyChart(selectedFeatures) {
     //var SameStreetNames = selectedStreetNames.length!==mapoch.oldSelectedStreetNames.length && selectedStreetNames.every(function(v,i) { return v === mapoch.oldSelectedStreetNames[i]});
     var SameStreetNames = selectedStreetNames.equals(mapoch.oldSelectedStreetNames);
 
-    if (myChart.id !== "myChart" && !SameStreetNames) {
-        myChart.destroy();
+    if (mapoch.myChart && mapoch.myChart.id !== "myChart" && !SameStreetNames) {
+        mapoch.myChart.destroy();
         destroyChart = true;
         console.log("destroy Chart, because the selected object names changed");
     }
@@ -572,17 +564,17 @@ function createPolyChart(selectedFeatures) {
     };
 
     // if Chart already exists, update it with new values and labels (e.g. only time changed)
-    if (myChart.id !== "myChart" && destroyChart == false && selectedFeatures.length !== 0) {
+    if (mapoch.myChart && destroyChart == false && selectedFeatures.length !== 0) {
         console.log("chart already exists, redraw with new values");
-        myChart.labels = selectedStreetNames;
-        myChart.data.datasets[0].data = selectedData;
-        myChart.update();
-        myChart.render();
-        myChart.resize();
+        mapoch.myChart.labels = selectedStreetNames;
+        mapoch.myChart.data.datasets[0].data = selectedData;
+        mapoch.myChart.update();
+        mapoch.myChart.render();
+        mapoch.myChart.resize();
     } else if (selectedFeatures.length !== 0) { // If Chart didnt exist before...
         console.log("bar chart doesnt exist yet, draw new chart");
         var ctx = document.getElementById("myChart");
-        myChart = new Chart(ctx, { // global, unsauber?
+        mapoch.myChart = new Chart(ctx, { // global, unsauber?
             type: 'bar',
             data: {
                 labels: selectedStreetNames,
@@ -709,32 +701,6 @@ function viewAerial() {
         }
     });
 }
-
-
-/////////  TEST changing array protoype to compare (arr1.equals(arr2)) arrays, not part of a function
-Array.prototype.equals = function(array, strict) {
-    if (!array)
-        return false;
-
-    if (arguments.length == 1)
-        strict = true;
-
-    if (this.length != array.length)
-        return false;
-
-    for (var i = 0; i < this.length; i++) {
-        if (this[i] instanceof Array && array[i] instanceof Array) {
-            if (!this[i].equals(array[i], strict))
-                return false;
-        } else if (strict && this[i] != array[i]) {
-            return false;
-        } else if (!strict) {
-            return this.sort().equals(array.sort(), true);
-        }
-    }
-    return true;
-}
-
 
 function SelectSinglePoint() {
     // remove polygon selection
@@ -1033,6 +999,57 @@ function askFields(first_feature, option) {
     } // end of switch
 }
 
+function reset() {
+  // remove all options from select elements
+  removeAllOptions(document.getElementById("coordIDSelect"));
+  removeAllOptions(document.getElementById("xSelect"));
+  removeAllOptions(document.getElementById("ySelect"));
+  removeAllOptions(document.getElementById("dateSelect"));
+
+  //remove layer from map, create new (empty) one
+  var textBox = document.getElementById("epsgInput");
+  textBox.value = "";
+  textBox.placeholder = "4326";
+  document.getElementById("list_coords").innerHTML = "";
+  document.getElementById("list_data").innerHTML = "";
+  document.getElementById("list_piechart").innerHTML = "";
+
+  document.getElementById("hideCoordSelection").style.visibility = "hidden";
+  document.getElementById("choseFieldDiv1").style.visibility = "hidden";
+  document.getElementById("renderCoordinatesButton").style.visibility = "hidden";
+  document.getElementById("hideSelectionHolder").style.visibility = "hidden";
+  document.getElementById("renderDataButton").style.visibility = "hidden";
+  document.getElementById("hideDataSelection").style.visibility = "hidden";
+  document.getElementById("choseFieldDiv2").style.visibility = "hidden";
+  document.getElementById("hideSelectionHolder").style.visibility = "hidden";
+
+  document.getElementById("sliderDiv").style.display = "none";
+
+  removeGeometryLayer();
+  removeDrawing();
+
+  document.getElementById("canvas_div").style.display = "none";
+
+  deleteSnapshots();
+
+  // reset global object
+  mapoch = {
+    currentFiles: {},// save filenames of dropped data
+    selectedOptions: {},//global variable for selecting matching id, coordinate-field, epsg,...
+    zaehlstellen_data: [],
+    min_max_zaehlstelle: {}, //object of array of min and max values of each feature
+    PieChartData: {},
+    PieChartColorMap: {}, // object with colors for each attribute of the pie chart
+    PieChartCanvasElements: {}, // object with canvas elements, keys are names to join by (e.g. names of countries)
+    selectionStatus: { // save state of JSON drop-down menu, so they dont have to be checked via DOM-queries
+        coords: false,
+        date: false,
+        pieCharts: false
+    },
+    csv: ""
+  }
+}
+
 //===============================================================================================================
 // function to get layer by name
 var getLayerByName = function(layerName){
@@ -1047,13 +1064,68 @@ var getLayerByName = function(layerName){
     return correctLayer;
 }
 
+//remove all options from select
+function removeAllOptions(select) {
+  var i;
+  for(i = select.options.length - 1 ; i >= 0 ; i--)
+  {
+      select.remove(i);
+  }
+}
+
+function unselect() {
+  removeDrawing();
+}
+
+//remove old drawing layer
+function removeDrawing() {
+  map.getLayers().getArray().forEach(function(layer) {
+      if (layer.get("name") === 'drawingLayer') {
+          console.log('removing layer: ', layer);
+          map.removeLayer(layer);
+      }
+  })
+
+  if (mapoch.select !== undefined) {
+      mapoch.select.getFeatures().item(0).setStyle(null)
+      map.removeInteraction(mapoch.select);
+      console.log("remove select");
+  };
+  if (mapoch.draw !== undefined) {
+      map.removeInteraction(mapoch.draw);
+      mapoch.drawingSource.clear();
+      console.log("remove draw");
+  };
+  if (mapoch.drawingSource !== undefined) {
+      mapoch.drawingSource.clear();
+  }
+}
 
 
 
+/////////  TEST changing array protoype to compare (arr1.equals(arr2)) arrays, not part of a function
+Array.prototype.equals = function(array, strict) {
+    if (!array)
+        return false;
 
+    if (arguments.length == 1)
+        strict = true;
 
+    if (this.length != array.length)
+        return false;
 
-
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] instanceof Array && array[i] instanceof Array) {
+            if (!this[i].equals(array[i], strict))
+                return false;
+        } else if (strict && this[i] != array[i]) {
+            return false;
+        } else if (!strict) {
+            return this.sort().equals(array.sort(), true);
+        }
+    }
+    return true;
+}
 
 
 
