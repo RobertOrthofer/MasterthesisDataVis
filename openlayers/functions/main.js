@@ -436,11 +436,11 @@ function updateInput(thisDate, goLeft, loop) { // go left: true if going left. l
             document.getElementById('currentDate').innerHTML = shownDate;
 
             //console.log("upadting style after updating timeslider");
-            updateStyle(thisDate);
-            addPieCharts();
-
             foundNextWeekday = true;
             document.getElementById("time_slider").value = thisDate; // Update of Timeslider
+  
+            updateStyle(thisDate);
+            addPieCharts();
             if (typeof mapoch.selectedFeatures !== "undefined" && mapoch.selectedFeatures.length > 0) {
                 createPolyChart(mapoch.selectedFeatures)
             }
@@ -1027,6 +1027,10 @@ function reset() {
 
   removeGeometryLayer();
   removeDrawing();
+  var chartLayer = getLayerByName('chartLayer');
+  map.removeLayer(chartLayer);
+  delete mapoch.PieChartData;
+  delete mapoch.PieChartColorMap;
 
   document.getElementById("canvas_div").style.display = "none";
 
