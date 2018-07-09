@@ -33,7 +33,10 @@ function handlePiechartFile(evt) {
         var r = confirm("Override existing File?"); // ask User
         if (r == true) {
             console.log("Override File");
-            // TO DO: Create selections
+            delete mapoch.PieChartData;
+            delete mapoch.PieChartColorMap;
+            var chartLayer = getLayerByName('chartLayer');
+            map.removeLayer(chartLayer);
         } else {
             console.log("Do nothing");
             return;
@@ -97,7 +100,7 @@ function addPieCharts(){
     //console.log(mapoch.PieChartData);
     //if there is no PieChartData, step out
     if(Object.keys(mapoch.PieChartData).length === 0 && mapoch.PieChartData.constructor === Object){
-        //console.log("no pie chart data available");
+        console.log("no pie chart data available");
         return;
     }
 
@@ -116,23 +119,24 @@ function addPieCharts(){
     var correctEpochElement = {};
     mapoch.PieChartData.some(function(element){
         if(element[mapoch.selectedOptions.dateField].getTime() == thisDate){
-            console.log("found element with correct date");
+            //console.log("found element with correct date");
             correctEpochElement = element;
         }
         else{
-            console.log("not correct element");
+            //console.log("not correct element");
         }
     })
-    console.log(correctEpochElement);
+    //console.log(correctEpochElement);
 
     // for each key in the current element, which is not the date, make a pie chart
     // (keys are names to match by, e.g. county names)
     for (var key in mapoch.zaehlstellen_data[thisDateInteger]) {
+      console.log("current epoch: ", thisDateInteger);
         if (key == mapoch.selectedOptions.dateField){
             continue
         }
         else{
-            console.log(correctEpochElement[key]);
+            //console.log(correctEpochElement[key]);
 
             // if not done already, map the attributes to colors, so even if the order is changed,
             // the colors will always be the same for the same attribut, in every Pie chart
@@ -196,7 +200,7 @@ function createPieChart(dataObject){
         ctx.fillStyle = mapoch.PieChartColorMap[sortedValuesKeys[i]]; // look up the color for the current key
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
-        console.log("last end: " + lastend);
+        //console.log("last end: " + lastend);
         // Arc Parameters: x, y, radius, startingAngle (radians), endingAngle (radians), antiClockwise (boolean)
         ctx.arc(centerX, centerY, centerY, lastend, lastend + (Math.PI * 2 * (dataObject[sortedValuesKeys[i]] / myTotal)), false);
         ctx.lineTo(centerX, centerY);
@@ -232,7 +236,7 @@ function addChartsToMap(){
         var length = mapFeatures.length;
         for(i=0; i<mapFeatures.length; i++){  // look for the corresponding geometry...
             if(mapFeatures[i].get("name") === key){
-                console.log ("i: "+ i + "  " + mapFeatures[i].get("name") + "===" + key);
+                //console.log ("i: "+ i + "  " + mapFeatures[i].get("name") + "===" + key);
                 var matchedFeature = mapFeatures[i];
                 var centerPoint;
                 if(matchedFeature.getGeometry().getType() === "Polygon"){
@@ -252,9 +256,9 @@ function addChartsToMap(){
                     })
                 }
                 else{
-                    console.log("geometryType " + matchedFeature.getGeometry().getType() + "not yet supported");
+                    //console.log("geometryType " + matchedFeature.getGeometry().getType() + "not yet supported");
                 }
-                console.log(centerPoint);
+                //console.log(centerPoint);
                 // TO DO: HTMLCanvasElement for ol.style.Icon
                 //create a ol.feature as Point
                 var iconFeature = new ol.Feature({
@@ -307,14 +311,14 @@ function sortValues(list){
 
 // helper function to map the attributes to colors
 function mapColors(PieChartDataElement){
-    console.log(PieChartDataElement);
+    //console.log(PieChartDataElement);
     //colors taken from this artikle:
     //http://www.mulinblog.com/a-color-palette-optimized-for-data-visualization/
     //original source: Stephen Few’s book, Show Me the Numbers
     //http://castor.tugraz.at/F/7YY47NQH8A3D2HS8PTK3TV54XXB8VSJ879XKKUQHKYTD2VKUAF-63076?func=item-global&doc_library=TUG01&doc_number=000508124&year=&volume=&sub_library=
     // gray is lighter to enable black labels
     var PieChartColors;
-    if (mapoch.currentFiles.PieChart === 'laender_wahlen_election.json') {
+    if (mapoch.currentFiles.PieChart === 'laender_wahlen.json') {
         PieChartColors = ['#ed2121', '#1c1c1c', '#2c35e0', '#efe15d']
     } else {
         PieChartColors = ['#676767', '#5DA5DA', '#FAA43A', '#60BD68', '#F17CB0', '#B2912F','#B276B2','#DECF3F','#F15854'] // Colors of each slice of the Pie Chart
@@ -347,7 +351,7 @@ function createPieChartLegend(){
 
 	var centerX = ctx.canvas.width/2;
 	var centerY = ctx.canvas.height/2;
-    var pieChartRadius = 48;
+  var pieChartRadius = 48;
 	var labelRadius = pieChartRadius/0.9; //radius for label placement
 
     // create border first, so that the shadow of the labels work properly
