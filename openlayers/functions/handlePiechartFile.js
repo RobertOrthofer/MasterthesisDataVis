@@ -52,6 +52,7 @@ function handlePiechartFile(evt) {
 
     var reader = new FileReader(); // to read the FileList object
     reader.onload = function(event) { // Reader ist asynchron, wenn reader mit operation fertig ist, soll das hier (JSON.parse) ausgeführt werden, sonst ist es noch null
+        console.log("file loaded");
         var columnNames = [];
         if (file.name.substr(file.name.length - 3) === "csv") { // check if filetiype is csv
             mapoch.currentFiles.CoordsFileType = "csv";
@@ -70,7 +71,7 @@ function handlePiechartFile(evt) {
     reader.readAsText(file, "UTF-8");
 
     document.getElementById('list_piechart').innerHTML = '<ul style="margin: 0px;">' + output.join('') + '</ul>';
-    addPieCharts();
+    //addPieCharts();
 }
 
 // helper function to convert dates in piechartdata into real javascript date objects
@@ -89,7 +90,8 @@ function makeDateObjectsPieChart() {
 
 // adding Pie Charts to map, after Pie Chart Data was dropped (requires geometry layer first)
 function addPieCharts(){
-
+    console.log("adding pie charts");
+    console.log(mapoch.PieChartData);
     // for each Object of the Pie Chart Data at the current time epoch, look into the geometry layer
     // for a feature with the name matching the keys of the pie chart data. create a pie chart at the centroid
     // of the polygon. Because MultiPolygon are possible (tyrol), scan for the largest polygon of each multipolygon,
@@ -99,7 +101,7 @@ function addPieCharts(){
 
     //console.log(mapoch.PieChartData);
     //if there is no PieChartData, step out
-    if(Object.keys(mapoch.PieChartData).length === 0 && mapoch.PieChartData.constructor === Object){
+    if(mapoch.PieChartData && Object.keys(mapoch.PieChartData).length === 0 && mapoch.PieChartData.constructor === Object){
         console.log("no pie chart data available");
         return;
     }
@@ -140,7 +142,8 @@ function addPieCharts(){
 
             // if not done already, map the attributes to colors, so even if the order is changed,
             // the colors will always be the same for the same attribut, in every Pie chart
-            if(Object.keys(mapoch.PieChartColorMap).length === 0 && mapoch.PieChartColorMap.constructor === Object){
+            //if(Object.keys(mapoch.PieChartColorMap).length === 0 && mapoch.PieChartColorMap.constructor === Object){
+            if(!mapoch.PieChartColorMap || Object.keys(mapoch.PieChartColorMap).length === 0 && mapoch.PieChartColorMap.constructor === Object){
                 mapColors(correctEpochElement[key]);
             }
 
@@ -318,12 +321,12 @@ function mapColors(PieChartDataElement){
     //http://castor.tugraz.at/F/7YY47NQH8A3D2HS8PTK3TV54XXB8VSJ879XKKUQHKYTD2VKUAF-63076?func=item-global&doc_library=TUG01&doc_number=000508124&year=&volume=&sub_library=
     // gray is lighter to enable black labels
     var PieChartColors;
-    if (mapoch.currentFiles.PieChart === 'laender_wahlen.json') {
+    if (mapoch.currentFiles.PieChart && mapoch.currentFiles.PieChart === 'laender_wahlen.json') {
         PieChartColors = ['#ed2121', '#1c1c1c', '#2c35e0', '#efe15d']
     } else {
         PieChartColors = ['#676767', '#5DA5DA', '#FAA43A', '#60BD68', '#F17CB0', '#B2912F','#B276B2','#DECF3F','#F15854'] // Colors of each slice of the Pie Chart
     }
-
+    mapoch.PieChartColorMap = {};
     var i = 0;
     for (var key in PieChartDataElement) {
         mapoch.PieChartColorMap[key] = PieChartColors[i++];
