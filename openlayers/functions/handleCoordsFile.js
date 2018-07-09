@@ -39,12 +39,8 @@ function csvToGeoJSON() { //csv = reader.result
 }
 
 function removeGeometryLayer() {
-    map.getLayers().getArray().forEach(function(layer) {
-        if (layer.get("name") === 'geometryLayer') {
-            console.log('removing layer: ', layer);
-            map.removeLayer(layer);
-        }
-    })
+  var chartLayer = getLayerByName('geometryLayer');
+  map.removeLayer(chartLayer);
 }
 
 
