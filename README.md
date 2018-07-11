@@ -32,7 +32,7 @@ open index.htm in a browser
 
 Data for testing is available at /sample_data
 
-## How-To (#how-to)
+## How-To
 
 ### Create Your Own Data
 
